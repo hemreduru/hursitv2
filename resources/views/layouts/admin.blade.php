@@ -28,6 +28,23 @@
                 },
             },
         }
+
+        // Check local storage or system preference, default to dark
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage))) {
+            document.documentElement.classList.add('dark')
+        } else {
+            document.documentElement.classList.remove('dark')
+        }
+
+        function toggleTheme() {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.theme = 'light';
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.theme = 'dark';
+            }
+        }
     </script>
     @livewireStyles
 </head>
@@ -50,7 +67,7 @@
                         <a href="{{ route('set-locale', 'en') }}" class="px-2 py-1 rounded text-xs font-bold transition-all {{ app()->getLocale() === 'en' ? 'bg-white dark:bg-slate-600 shadow-sm text-slate-900 dark:text-white' : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white' }}">EN</a>
                         <a href="{{ route('set-locale', 'tr') }}" class="px-2 py-1 rounded text-xs font-bold transition-all {{ app()->getLocale() === 'tr' ? 'bg-white dark:bg-slate-600 shadow-sm text-slate-900 dark:text-white' : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white' }}">TR</a>
                     </div>
-                    <button class="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-lg transition-colors" title="Toggle Theme" onclick="document.documentElement.classList.toggle('dark')">
+                    <button class="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-lg transition-colors" title="Toggle Theme" onclick="toggleTheme()">
                         <span class="material-symbols-outlined hidden dark:block text-xl">light_mode</span>
                         <span class="material-symbols-outlined block dark:hidden text-xl">dark_mode</span>
                     </button>

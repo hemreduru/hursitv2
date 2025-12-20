@@ -25,7 +25,13 @@ class DeployApp extends Command
      */
     public function handle()
     {
-        $this->info('Starting deployment...');
+        $this->info('Starting deployment process...');
+
+        if ($this->option('force') || $this->confirm('Do you want to configure project details (App Name, URL, Locale)?', true)) {
+            $this->setupWizard();
+        }
+
+        $this->info('Starting automated deployment tasks...');
 
         // 1. Migrate Database
         $this->info('Migrating database...');
@@ -56,5 +62,43 @@ class DeployApp extends Command
 
         $this->info('Deployment completed successfully! 🚀');
         return 0;
+    }
+
+    private function setupWizard()
+    {
+        $appName = $this->ask('Application Name', config('app.name'));
+        $appUrl = $this->ask('Application URL', config('app.url'));
+        $appLocale = $this->choice('Default Language', ['tr', 'en'], config('app.locale'));
+
+        $this->updateEnvironmentFile([
+            'APP_NAME' => '"' . $appName . '"',
+            'APP_URL' => $appUrl,
+            'APP_LOCALE' => $appLocale,
+        ]);
+
+        $this->info('Configuration updated.');
+        // Clear config cache immediately to reflect changes for subsequent steps
+        $this->call('config:clear');
+    }
+
+    private function updateEnvironmentFile(array $data)
+    {
+        $path = base_path('.env');
+
+        if (!file_exists($path)) {
+            return;
+        }
+
+        $content = file_get_contents($path);
+
+        foreach ($data as $key => $value) {
+            if (preg_match("/^{$key}=.*/m", $content)) {
+                $content = preg_replace("/^{$key}=.*/m", "{$key}={$value}", $content);
+            } else {
+                $content .= "\n{$key}={$value}";
+            }
+        }
+
+        file_put_contents($path, $content);
     }
 }
