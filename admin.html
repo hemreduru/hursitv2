@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Admin Panel - Hurşit Emre Duru</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#135bec",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                        "card-light": "#ffffff",
+                        "card-dark": "#161e2c",
+                        "border-light": "#e2e8f0",
+                        "border-dark": "#232f48",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display antialiased selection:bg-primary/30 selection:text-primary transition-colors duration-200">
+<div class="relative min-h-screen flex flex-col overflow-hidden">
+<header class="sticky top-0 z-50 w-full border-b border-border-light dark:border-border-dark bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-md">
+<div class="w-full px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="size-10 bg-primary rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-primary/20">
+                        H
+                    </div>
+<h2 class="hidden sm:block text-lg font-bold tracking-tight">Hurşit Emre Duru <span class="text-slate-400 font-normal ml-2 text-sm bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded">Admin</span></h2>
+</div>
+<nav class="hidden md:flex items-center gap-6 lg:gap-8">
+<a class="text-sm font-medium text-slate-500 hover:text-primary transition-colors" href="#">Live Site</a>
+</nav>
+<div class="flex items-center gap-3 md:gap-4">
+<div class="flex items-center bg-slate-200 dark:bg-slate-800 rounded-lg p-0.5">
+<button class="px-2 py-1 rounded text-xs font-bold bg-white dark:bg-slate-600 shadow-sm text-slate-900 dark:text-white transition-all">EN</button>
+<button class="px-2 py-1 rounded text-xs font-bold text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-all">TR</button>
+</div>
+<button class="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-lg transition-colors" title="Toggle Theme">
+<span class="material-symbols-outlined hidden dark:block text-xl">light_mode</span>
+<span class="material-symbols-outlined block dark:hidden text-xl">dark_mode</span>
+</button>
+<div class="h-9 w-9 bg-primary/20 rounded-full flex items-center justify-center text-primary font-bold">
+                        A
+                    </div>
+</div>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden">
+<aside class="hidden lg:flex w-64 flex-col border-r border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark overflow-y-auto">
+<div class="p-4 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined text-xl">dashboard</span>
+                    Dashboard
+                </a>
+<a class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg bg-primary/10 text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-xl">article</span>
+                    Blog Posts
+                </a>
+<a class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined text-xl">rocket_launch</span>
+                    Projects
+                </a>
+<a class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined text-xl">settings</span>
+                    Settings
+                </a>
+</div>
+<div class="mt-auto p-4 border-t border-border-light dark:border-border-dark">
+<a class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors" href="#">
+<span class="material-symbols-outlined text-xl">logout</span>
+                    Sign Out
+                </a>
+</div>
+</aside>
+<main class="flex-1 overflow-y-auto p-4 sm:p-8">
+<div class="max-w-6xl mx-auto space-y-8">
+<section>
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+<div>
+<h1 class="text-2xl font-bold tracking-tight">Blog Management</h1>
+<p class="text-slate-500 dark:text-slate-400 mt-1">Create, edit, and manage your technical articles.</p>
+</div>
+<button class="flex items-center justify-center gap-2 bg-primary hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-medium shadow-lg shadow-primary/20 transition-all active:scale-95 text-sm">
+<span class="material-symbols-outlined text-lg">add</span>
+                            New Post
+                        </button>
+</div>
+<div class="bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark rounded-xl overflow-hidden shadow-sm mb-8">
+<div class="overflow-x-auto">
+<table class="w-full text-left text-sm">
+<thead class="bg-slate-50 dark:bg-slate-800/50 border-b border-border-light dark:border-border-dark">
+<tr>
+<th class="px-6 py-3 font-semibold text-slate-900 dark:text-white">Title</th>
+<th class="px-6 py-3 font-semibold text-slate-900 dark:text-white">Status</th>
+<th class="px-6 py-3 font-semibold text-slate-900 dark:text-white">Date</th>
+<th class="px-6 py-3 font-semibold text-slate-900 dark:text-white">Lang</th>
+<th class="px-6 py-3 font-semibold text-slate-900 dark:text-white text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-border-light dark:divide-border-dark">
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-4 font-medium">Mastering React Server Components</td>
+<td class="px-6 py-4"><span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">Published</span></td>
+<td class="px-6 py-4 text-slate-500">Oct 24, 2023</td>
+<td class="px-6 py-4 text-slate-500">EN</td>
+<td class="px-6 py-4 text-right">
+<button class="text-slate-400 hover:text-primary transition-colors mr-2"><span class="material-symbols-outlined text-lg">edit</span></button>
+<button class="text-slate-400 hover:text-red-500 transition-colors"><span class="material-symbols-outlined text-lg">delete</span></button>
+</td>
+</tr>
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-4 font-medium">Ölçeklenebilir CSS Mimarileri</td>
+<td class="px-6 py-4"><span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400">Draft</span></td>
+<td class="px-6 py-4 text-slate-500">Sep 12, 2023</td>
+<td class="px-6 py-4 text-slate-500">TR</td>
+<td class="px-6 py-4 text-right">
+<button class="text-slate-400 hover:text-primary transition-colors mr-2"><span class="material-symbols-outlined text-lg">edit</span></button>
+<button class="text-slate-400 hover:text-red-500 transition-colors"><span class="material-symbols-outlined text-lg">delete</span></button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark rounded-xl p-6 shadow-sm">
+<h3 class="text-lg font-bold mb-4 border-b border-border-light dark:border-border-dark pb-2">Edit Post: Mastering React Server Components</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="col-span-2">
+<label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Title</label>
+<input class="w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark text-slate-900 dark:text-white focus:ring-primary focus:border-primary" type="text" value="Mastering React Server Components"/>
+</div>
+<div class="col-span-2">
+<label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Content (Markdown supported)</label>
+<textarea class="w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark text-slate-900 dark:text-white focus:ring-primary focus:border-primary font-mono text-sm" rows="6">## Introduction
+React Server Components (RSC) represent a paradigm shift...
+                                    </textarea>
+</div>
+<div>
+<label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Tags (comma separated)</label>
+<input class="w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark text-slate-900 dark:text-white focus:ring-primary focus:border-primary" type="text" value="React, Next.js, Architecture"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Language</label>
+<select class="w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark text-slate-900 dark:text-white focus:ring-primary focus:border-primary">
+<option selected="">English</option>
+<option>Turkish</option>
+</select>
+</div>
+<div>
+<label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Publish Date</label>
+<input class="w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark text-slate-900 dark:text-white focus:ring-primary focus:border-primary" type="date" value="2023-10-24"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Est. Reading Time (mins)</label>
+<input class="w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark text-slate-900 dark:text-white focus:ring-primary focus:border-primary" type="number" value="5"/>
+</div>
+</div>
+<div class="mt-6 flex justify-end gap-3">
+<button class="px-4 py-2 rounded-lg border border-border-light dark:border-border-dark hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium text-sm transition-colors">Cancel</button>
+<button class="px-4 py-2 rounded-lg bg-primary hover:bg-blue-600 text-white font-medium text-sm shadow-lg shadow-primary/20 transition-all">Save Changes</button>
+</div>
+</div>
+</section>
+<div class="border-t border-border-light dark:border-border-dark my-8"></div>
+<section>
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+<div>
+<h1 class="text-2xl font-bold tracking-tight">Project Management</h1>
+<p class="text-slate-500 dark:text-slate-400 mt-1">Add details about your featured works.</p>
+</div>
+<button class="flex items-center justify-center gap-2 bg-primary hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-medium shadow-lg shadow-primary/20 transition-all active:scale-95 text-sm">
+<span class="material-symbols-outlined text-lg">add</span>
+                            New Project
+                        </button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+<div class="group relative bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark rounded-xl p-4 hover:border-primary/50 transition-all">
+<div class="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 bg-background-light dark:bg-background-dark rounded-md text-slate-500 hover:text-primary shadow-sm border border-border-light dark:border-border-dark"><span class="material-symbols-outlined text-sm">edit</span></button>
+<button class="p-1.5 bg-background-light dark:bg-background-dark rounded-md text-slate-500 hover:text-red-500 shadow-sm border border-border-light dark:border-border-dark"><span class="material-symbols-outlined text-sm">delete</span></button>
+</div>
+<h3 class="font-bold text-lg mb-1">Analytics Dashboard</h3>
+<p class="text-xs text-slate-500 mb-2">React, D3.js, Node.js</p>
+<div class="text-xs px-2 py-1 bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 inline-block rounded">English</div>
+</div>
+<div class="group relative bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark rounded-xl p-4 hover:border-primary/50 transition-all">
+<div class="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 bg-background-light dark:bg-background-dark rounded-md text-slate-500 hover:text-primary shadow-sm border border-border-light dark:border-border-dark"><span class="material-symbols-outlined text-sm">edit</span></button>
+<button class="p-1.5 bg-background-light dark:bg-background-dark rounded-md text-slate-500 hover:text-red-500 shadow-sm border border-border-light dark:border-border-dark"><span class="material-symbols-outlined text-sm">delete</span></button>
+</div>
+<h3 class="font-bold text-lg mb-1">Open Source CLI Tool</h3>
+<p class="text-xs text-slate-500 mb-2">Go, CLI, Docker</p>
+<div class="text-xs px-2 py-1 bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 inline-block rounded">English</div>
+</div>
+</div>
+<div class="bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark rounded-xl p-6 shadow-sm">
+<h3 class="text-lg font-bold mb-4 border-b border-border-light dark:border-border-dark pb-2">Add New Project</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="col-span-2 md:col-span-1">
+<label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Project Title</label>
+<input class="w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark text-slate-900 dark:text-white focus:ring-primary focus:border-primary" placeholder="e.g. E-Commerce Platform" type="text"/>
+</div>
+<div class="col-span-2 md:col-span-1">
+<label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Role</label>
+<input class="w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark text-slate-900 dark:text-white focus:ring-primary focus:border-primary" placeholder="e.g. Lead Developer" type="text"/>
+</div>
+<div class="col-span-2">
+<label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Short Description</label>
+<textarea class="w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark text-slate-900 dark:text-white focus:ring-primary focus:border-primary text-sm" placeholder="Brief overview shown on cards..." rows="2"></textarea>
+</div>
+<div class="col-span-2 md:col-span-1">
+<label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Tech Stack</label>
+<input class="w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark text-slate-900 dark:text-white focus:ring-primary focus:border-primary" placeholder="React, Node.js, AWS..." type="text"/>
+</div>
+<div class="col-span-2 md:col-span-1">
+<label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Language</label>
+<select class="w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark text-slate-900 dark:text-white focus:ring-primary focus:border-primary">
+<option>English</option>
+<option>Turkish</option>
+</select>
+</div>
+<div class="col-span-2">
+<label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Key Contributions (Bullet points)</label>
+<textarea class="w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark text-slate-900 dark:text-white focus:ring-primary focus:border-primary text-sm" placeholder="- Implemented authentication..." rows="3"></textarea>
+</div>
+<div class="col-span-2">
+<label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Challenges &amp; Solutions</label>
+<textarea class="w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark text-slate-900 dark:text-white focus:ring-primary focus:border-primary text-sm" placeholder="Describe a challenge faced..." rows="3"></textarea>
+</div>
+<div class="col-span-2 md:col-span-1">
+<label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Live URL</label>
+<div class="relative">
+<span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+<span class="material-symbols-outlined text-sm">link</span>
+</span>
+<input class="w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark text-slate-900 dark:text-white focus:ring-primary focus:border-primary pl-9" placeholder="https://..." type="url"/>
+</div>
+</div>
+<div class="col-span-2 md:col-span-1">
+<label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Repo URL</label>
+<div class="relative">
+<span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+<span class="material-symbols-outlined text-sm">code</span>
+</span>
+<input class="w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark text-slate-900 dark:text-white focus:ring-primary focus:border-primary pl-9" placeholder="https://github.com/..." type="url"/>
+</div>
+</div>
+</div>
+<div class="mt-6 flex justify-end gap-3">
+<button class="px-4 py-2 rounded-lg border border-border-light dark:border-border-dark hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium text-sm transition-colors">Reset</button>
+<button class="px-4 py-2 rounded-lg bg-primary hover:bg-blue-600 text-white font-medium text-sm shadow-lg shadow-primary/20 transition-all">Create Project</button>
+</div>
+</div>
+</section>
+</div>
+</main>
+</div>
+</div>
+</body></html>

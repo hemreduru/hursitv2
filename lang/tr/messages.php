@@ -1,0 +1,125 @@
+<?php
+
+return [
+    'available_for_hire' => 'İş tekliflerine açık',
+    'get_in_touch' => 'İletişime Geç',
+    'view_projects' => 'Projeleri Gör',
+    'home' => 'Ana Sayfa',
+    'work' => 'Projeler',
+    'blog' => 'Blog',
+    'download_cv' => 'CV İndir',
+
+    // Resume / Home
+    'technical_skills' => 'Teknik Yetenekler',
+    'work_experience' => 'İş Deneyimi',
+    'featured_projects' => 'Öne Çıkan Projeler',
+    'view_all' => 'Hepsini Gör',
+    'view_project' => 'Projeyi İncele',
+    'no_projects_found' => 'Proje bulunamadı.',
+    'latest_writings' => 'Son Yazılar',
+    'no_posts_found' => 'Blog yazısı bulunamadı.',
+    'min_read' => 'dk okuma',
+    'lets_work_together' => 'Birlikte Çalışalım',
+    'built_with' => 'Laravel Livewire ile yapıldı.',
+
+    // Blog & Project Index/Show
+    'back_to_blog' => 'Blog\'a Dön',
+    'back_to_projects' => 'Projelere Dön',
+    'share_this_post' => 'Paylaş',
+    'related_posts' => 'İlgili Yazılar',
+    'all_projects' => 'Tüm Projeler',
+    'all_writings' => 'Tüm Yazılar',
+
+    // Contact
+    'email_me' => 'Bana E-posta Gönder',
+
+    // Titles & Descriptions
+    'projects_title' => 'Ölçeklenebilir Sistemler İnşa Etmek',
+    'projects_desc' => 'Performans, ölçeklenebilirlik ve kullanıcı deneyimine odaklanan teknik projeler koleksiyonu.',
+    'blog_title' => 'Mühendislik Günlüğü',
+    'blog_desc' => 'Teknik incelemeler, sistem tasarımı notları ve yazılım mimarisi üzerine düşünceler.',
+
+    // UI Elements
+    'featured_label' => 'Öne Çıkan Proje',
+    'view_source' => 'Kaynak Kodu',
+    'live_demo' => 'Canlı Demo',
+    'tech_stack' => 'Teknoloji Yığını',
+    'search_placeholder' => 'Anahtar kelime ile ara...',
+
+    // Admin
+    'admin_dashboard' => 'Kontrol Paneli',
+    'admin_welcome' => 'Admin paneline hoşgeldiniz.',
+    'admin_projects_manage' => 'Portfolyo projelerinizi yönetin.',
+    'admin_go_projects' => 'Projelere Git',
+    'admin_blog_manage' => 'Teknik yazılarınızı yönetin.',
+    'admin_go_blog' => 'Blog\'a Git',
+    'admin_profile_manage' => 'Biyografi ve yeteneklerinizi güncelleyin.',
+    'admin_edit_profile' => 'Profili Düzenle',
+    'admin_blog_management' => 'Blog Yönetimi',
+    'admin_create_manage_blog' => 'Teknik yazılarınızı oluşturun ve yönetin.',
+    'admin_new_post' => 'Yeni Yazı',
+    'admin_title' => 'Başlık',
+    'admin_status' => 'Durum',
+    'admin_date' => 'Tarih',
+    'admin_lang' => 'Dil',
+    'admin_actions' => 'İşlemler',
+    'admin_no_posts' => 'Yazı bulunamadı.',
+    'admin_edit_post' => 'Yazıyı Düzenle',
+    'admin_create_post' => 'Yazı Oluştur',
+    'admin_back_list' => 'Listeye Dön',
+    'admin_slug' => 'Kısa Ad (Slug)',
+    'admin_short_desc' => 'Kısa Açıklama',
+    'admin_content' => 'İçerik',
+    'admin_published_at' => 'Yayınlanma Tarihi',
+    'admin_reading_time' => 'Okuma Süresi (dk)',
+    'admin_tags' => 'Etiketler',
+    'admin_select_multiple' => 'Çoklu seçim için Ctrl/Cmd tuşuna basılı tutun.',
+    'admin_save' => 'Kaydet',
+
+    // Projects
+    'admin_project_management' => 'Proje Yönetimi',
+    'admin_showcase_work' => 'En iyi çalışmalarınızı sergileyin.',
+    'admin_new_project' => 'Yeni Proje',
+    'admin_featured' => 'Öne Çıkan',
+    'admin_tech_stack' => 'Teknoloji Yığını',
+    'admin_edit_project' => 'Projeyi Düzenle',
+    'admin_create_project' => 'Proje Oluştur',
+    'admin_tech_stack_ph' => 'Teknoloji Yığını (virgülle ayrılmış)',
+    'admin_repo_url' => 'Depo URL',
+    'admin_live_url' => 'Canlı URL',
+    'admin_feature_homepage' => 'Bu projeyi Ana Sayfada öne çıkar',
+    'admin_save_project' => 'Projeyi Kaydet',
+
+    // Tags
+    'admin_tags_management' => 'Etiket Yönetimi',
+    'admin_organize_content' => 'İçeriğinizi düzenleyin.',
+    'admin_new_tag' => 'Yeni Etiket',
+    'admin_name' => 'İsim',
+    'admin_no_tags' => 'Etiket bulunamadı.',
+    'admin_edit_tag' => 'Etiketi Düzenle',
+    'admin_create_tag' => 'Etiket Oluştur',
+    'admin_save_tag' => 'Etiketi Kaydet',
+
+    // Profile
+    'admin_profile_settings' => 'Profil Ayarları',
+    'admin_manage_profile' => 'Her dil için genel profil bilgilerinizi yönetin.',
+    'admin_new_profile' => 'Yeni Profil',
+    'admin_no_profiles' => 'Profil bulunamadı. Genellikle dil başına bir tane (TR, EN) gerekir.',
+    'admin_create_profile' => 'Profil Oluştur',
+    'admin_job_title' => 'Ünvan (İş Ünvanı)',
+    'admin_contact_email' => 'İletişim E-postası',
+    'admin_bio' => 'Biyografi',
+    'admin_social_links' => 'Sosyal Medya Linkleri',
+    'admin_save_profile' => 'Profili Kaydet',
+
+    // Layout
+    'admin_menu' => 'Menü',
+    'admin_nav_dashboard' => 'Kontrol Paneli',
+    'admin_nav_blog' => 'Yazılar',
+    'admin_nav_projects' => 'Projeler',
+    'admin_nav_settings' => 'Ayarlar / Profil',
+    'admin_sign_out' => 'Çıkış Yap',
+    'admin_badge' => 'Yönetici',
+    'admin_live_site' => 'Canlı Site',
+    'admin_profile_header' => 'Profil',
+];

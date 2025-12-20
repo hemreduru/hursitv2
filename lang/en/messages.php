@@ -1,0 +1,125 @@
+<?php
+
+return [
+    'available_for_hire' => 'Available for hire',
+    'get_in_touch' => 'Get in Touch',
+    'view_projects' => 'View Projects',
+    'home' => 'Home',
+    'work' => 'Work',
+    'blog' => 'Blog',
+    'download_cv' => 'Download CV',
+
+    // Resume / Home
+    'technical_skills' => 'Technical Skills',
+    'work_experience' => 'Work Experience',
+    'featured_projects' => 'Featured Projects',
+    'view_all' => 'View all',
+    'view_project' => 'View Project',
+    'no_projects_found' => 'No projects found.',
+    'latest_writings' => 'Latest Writings',
+    'no_posts_found' => 'No blog posts found.',
+    'min_read' => 'min read',
+    'lets_work_together' => "Let's work together",
+    'built_with' => 'Built with Laravel Livewire.',
+
+    // Blog & Project Index/Show
+    'back_to_blog' => 'Back to Blog',
+    'back_to_projects' => 'Back to Projects',
+    'share_this_post' => 'Share this post',
+    'related_posts' => 'Related Posts',
+    'all_projects' => 'All Projects',
+    'all_writings' => 'All Writings',
+
+    // Contact
+    'email_me' => 'Email Me',
+
+    // Titles & Descriptions
+    'projects_title' => 'Building Scalable Systems',
+    'projects_desc' => 'A curated collection of technical projects focusing on performance, scalability, and user experience.',
+    'blog_title' => 'Engineering Log',
+    'blog_desc' => 'Technical deep dives, system design notes, and thoughts on software architecture.',
+
+    // UI Elements
+    'featured_label' => 'Featured Project',
+    'view_source' => 'View Source',
+    'live_demo' => 'Live Demo',
+    'tech_stack' => 'Tech Stack',
+    'search_placeholder' => 'Search posts by keyword...',
+
+    // Admin
+    'admin_dashboard' => 'Dashboard',
+    'admin_welcome' => 'Welcome back to the admin panel.',
+    'admin_projects_manage' => 'Manage your portfolio projects.',
+    'admin_go_projects' => 'Go to Projects',
+    'admin_blog_manage' => 'Manage your technical articles.',
+    'admin_go_blog' => 'Go to Blog',
+    'admin_profile_manage' => 'Update your bio and skills.',
+    'admin_edit_profile' => 'Edit Profile',
+    'admin_blog_management' => 'Blog Management',
+    'admin_create_manage_blog' => 'Create, edit, and manage your technical articles.',
+    'admin_new_post' => 'New Post',
+    'admin_title' => 'Title',
+    'admin_status' => 'Status',
+    'admin_date' => 'Date',
+    'admin_lang' => 'Lang',
+    'admin_actions' => 'Actions',
+    'admin_no_posts' => 'No posts found.',
+    'admin_edit_post' => 'Edit Post',
+    'admin_create_post' => 'Create Post',
+    'admin_back_list' => 'Back to List',
+    'admin_slug' => 'Slug',
+    'admin_short_desc' => 'Short Description',
+    'admin_content' => 'Content',
+    'admin_published_at' => 'Published At',
+    'admin_reading_time' => 'Reading Time (min)',
+    'admin_tags' => 'Tags',
+    'admin_select_multiple' => 'Hold Ctrl/Cmd to select multiple.',
+    'admin_save' => 'Save Post',
+
+    // Projects
+    'admin_project_management' => 'Project Management',
+    'admin_showcase_work' => 'Showcase your best work.',
+    'admin_new_project' => 'New Project',
+    'admin_featured' => 'Featured',
+    'admin_tech_stack' => 'Tech Stack',
+    'admin_edit_project' => 'Edit Project',
+    'admin_create_project' => 'Create Project',
+    'admin_tech_stack_ph' => 'Tech Stack (comma separated)',
+    'admin_repo_url' => 'Repository URL',
+    'admin_live_url' => 'Live URL',
+    'admin_feature_homepage' => 'Feature this project on Homepage',
+    'admin_save_project' => 'Save Project',
+
+    // Tags
+    'admin_tags_management' => 'Tags Management',
+    'admin_organize_content' => 'Organize your content.',
+    'admin_new_tag' => 'New Tag',
+    'admin_name' => 'Name',
+    'admin_no_tags' => 'No tags found.',
+    'admin_edit_tag' => 'Edit Tag',
+    'admin_create_tag' => 'Create Tag',
+    'admin_save_tag' => 'Save Tag',
+
+    // Profile
+    'admin_profile_settings' => 'Profile Settings',
+    'admin_manage_profile' => 'Manage your public profile information for each language.',
+    'admin_new_profile' => 'New Profile',
+    'admin_no_profiles' => 'No profiles found. Usually you need one per language (EN, TR).',
+    'admin_create_profile' => 'Create Profile',
+    'admin_job_title' => 'Title (Job Title)',
+    'admin_contact_email' => 'Contact Email',
+    'admin_bio' => 'Bio',
+    'admin_social_links' => 'Social Links',
+    'admin_save_profile' => 'Save Profile',
+
+    // Layout
+    'admin_menu' => 'Menu',
+    'admin_nav_dashboard' => 'Dashboard',
+    'admin_nav_blog' => 'Blog Posts',
+    'admin_nav_projects' => 'Projects',
+    'admin_nav_settings' => 'Settings / Profile',
+    'admin_sign_out' => 'Sign Out',
+    'admin_badge' => 'Admin',
+    'admin_live_site' => 'Live Site',
+    'admin_profile_header' => 'Profile',
+];
