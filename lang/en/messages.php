@@ -122,4 +122,20 @@ return [
     'admin_badge' => 'Admin',
     'admin_live_site' => 'Live Site',
     'admin_profile_header' => 'Profile',
+
+    // SweetAlert
+    'are_you_sure' => 'Are you sure?',
+    'delete_warning' => "You won't be able to revert this!",
+    'yes_delete' => 'Yes, delete it!',
+    'cancel' => 'Cancel',
+    'item_deleted' => 'Item deleted successfully.',
+    'admin_search_placeholder' => 'Search by title, content...',
+    'admin_all_statuses' => 'All Statuses',
+    'status_published' => 'Published',
+    'status_draft' => 'Draft',
+    'admin_all_languages' => 'All Languages',
+    'admin_all_projects' => 'All Projects',
+    'admin_featured_only' => 'Featured Only',
+    'admin_standard_only' => 'Standard Only',
+    'admin_no_projects' => 'No projects found.',
 ];

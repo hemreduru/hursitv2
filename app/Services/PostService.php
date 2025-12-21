@@ -59,8 +59,25 @@ class PostService
         return $this->postRepository->findBySlug($slug, $locale);
     }
 
-    public function getAllForAdmin()
+    public function getAllForAdmin($perPage = 20, array $filters = [])
     {
-        return $this->postRepository->paginate(20);
+        $query = $this->postRepository->getModel()::query();
+
+        if (!empty($filters['search'])) {
+            $query->where(function ($q) use ($filters) {
+                $q->where('title', 'like', '%' . $filters['search'] . '%')
+                  ->orWhere('content', 'like', '%' . $filters['search'] . '%');
+            });
+        }
+
+        if (!empty($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
+
+        if (!empty($filters['locale'])) {
+            $query->where('locale', $filters['locale']);
+        }
+
+        return $query->latest()->paginate($perPage);
     }
 }

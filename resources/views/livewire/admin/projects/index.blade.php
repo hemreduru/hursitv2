@@ -10,6 +10,28 @@
                 {{ __('messages.admin_new_project') }}
             </a>
         </div>
+        <div class="bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark rounded-xl p-4 mb-6 shadow-sm">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                     <input wire:model.live.debounce.300ms="search" type="text" placeholder="{{ __('messages.admin_search_placeholder') }}" class="w-full rounded-lg border-border-light dark:border-border-dark bg-white dark:bg-slate-900 text-slate-900 dark:text-white px-4 py-2 focus:ring-2 focus:ring-primary focus:border-transparent transition-all">
+                </div>
+                <div>
+                    <select wire:model.live="featured" class="w-full rounded-lg border-border-light dark:border-border-dark bg-white dark:bg-slate-900 text-slate-900 dark:text-white px-4 py-2 focus:ring-2 focus:ring-primary focus:border-transparent transition-all">
+                        <option value="">{{ __('messages.admin_all_projects') }}</option>
+                        <option value="1">{{ __('messages.admin_featured_only') }}</option>
+                        <option value="0">{{ __('messages.admin_standard_only') }}</option>
+                    </select>
+                </div>
+                <div>
+                    <select wire:model.live="locale" class="w-full rounded-lg border-border-light dark:border-border-dark bg-white dark:bg-slate-900 text-slate-900 dark:text-white px-4 py-2 focus:ring-2 focus:ring-primary focus:border-transparent transition-all">
+                         <option value="">{{ __('messages.admin_all_languages') }}</option>
+                        <option value="en">English</option>
+                        <option value="tr">Türkçe</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
         <div class="bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark rounded-xl overflow-hidden shadow-sm mb-8">
             <div class="overflow-x-auto">
                 <table class="w-full text-left text-sm">
@@ -41,12 +63,20 @@
                             <td class="px-6 py-4 text-slate-500 uppercase">{{ $project->locale }}</td>
                             <td class="px-6 py-4 text-right">
                                 <a href="{{ route('admin.projects.edit', $project->id) }}" class="text-slate-400 hover:text-primary transition-colors mr-2 inline-block"><span class="material-symbols-outlined text-lg">edit</span></a>
-                                <button class="text-slate-400 hover:text-red-500 transition-colors"><span class="material-symbols-outlined text-lg">delete</span></button>
+                                <button
+                                    onclick="confirmAction(this, 'delete', [{{ $project->id }}])"
+                                    data-title="{{ __('messages.are_you_sure') }}"
+                                    data-text="{{ __('messages.delete_warning') }}"
+                                    data-confirm-text="{{ __('messages.yes_delete') }}"
+                                    data-cancel-text="{{ __('messages.cancel') }}"
+                                    class="text-slate-400 hover:text-red-500 transition-colors">
+                                    <span class="material-symbols-outlined text-lg">delete</span>
+                                </button>
                             </td>
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="5" class="px-6 py-4 text-center text-slate-500">{{ __('messages.admin_no_posts') }}</td>
+                            <td colspan="5" class="px-6 py-4 text-center text-slate-500">{{ __('messages.admin_no_projects') }}</td>
                         </tr>
                         @endforelse
                     </tbody>

@@ -30,9 +30,28 @@ class ProjectService
         return $this->projectRepository->findBySlug($slug, $locale);
     }
 
-    public function paginate(int $perPage = 15)
+    public function paginate(int $perPage = 15, array $filters = [])
     {
-        return $this->projectRepository->paginate($perPage);
+        $query = $this->projectRepository->getModel()::query();
+
+        if (!empty($filters['search'])) {
+            $query->where(function ($q) use ($filters) {
+                $q->where('title', 'like', '%' . $filters['search'] . '%')
+                  ->orWhere('short_description', 'like', '%' . $filters['search'] . '%')
+                  ->orWhere('content', 'like', '%' . $filters['search'] . '%')
+                  ->orWhere('tech_stack', 'like', '%' . $filters['search'] . '%');
+            });
+        }
+
+        if (isset($filters['featured']) && $filters['featured'] !== '') {
+            $query->where('featured', $filters['featured']);
+        }
+
+        if (!empty($filters['locale'])) {
+            $query->where('locale', $filters['locale']);
+        }
+
+        return $query->latest()->paginate($perPage);
     }
 
     public function create(array $data)

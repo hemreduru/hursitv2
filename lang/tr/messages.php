@@ -122,4 +122,20 @@ return [
     'admin_badge' => 'Yönetici',
     'admin_live_site' => 'Canlı Site',
     'admin_profile_header' => 'Profil',
+
+    // SweetAlert
+    'are_you_sure' => 'Emin misiniz?',
+    'delete_warning' => "Bu işlemi geri alamayacaksınız!",
+    'yes_delete' => 'Evet, sil!',
+    'cancel' => 'İptal',
+    'item_deleted' => 'Öğe başarıyla silindi.',
+    'admin_search_placeholder' => 'Başlık veya içeriğe göre ara...',
+    'admin_all_statuses' => 'Tüm Durumlar',
+    'status_published' => 'Yayında',
+    'status_draft' => 'Taslak',
+    'admin_all_languages' => 'Tüm Diller',
+    'admin_all_projects' => 'Tüm Projeler',
+    'admin_featured_only' => 'Sadece Öne Çıkanlar',
+    'admin_standard_only' => 'Sadece Standart',
+    'admin_no_projects' => 'Proje bulunamadı.',
 ];

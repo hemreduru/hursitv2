@@ -11,6 +11,28 @@
                 {{ __('messages.admin_new_post') }}
             </button>
         </div>
+        <div class="bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark rounded-xl p-4 mb-6 shadow-sm">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                     <input wire:model.live.debounce.300ms="search" type="text" placeholder="{{ __('messages.admin_search_placeholder') }}" class="w-full rounded-lg border-border-light dark:border-border-dark bg-white dark:bg-slate-900 text-slate-900 dark:text-white px-4 py-2 focus:ring-2 focus:ring-primary focus:border-transparent transition-all">
+                </div>
+                <div>
+                    <select wire:model.live="status" class="w-full rounded-lg border-border-light dark:border-border-dark bg-white dark:bg-slate-900 text-slate-900 dark:text-white px-4 py-2 focus:ring-2 focus:ring-primary focus:border-transparent transition-all">
+                        <option value="">{{ __('messages.admin_all_statuses') }}</option>
+                        <option value="published">{{ __('messages.status_published') }}</option>
+                        <option value="draft">{{ __('messages.status_draft') }}</option>
+                    </select>
+                </div>
+                <div>
+                    <select wire:model.live="locale" class="w-full rounded-lg border-border-light dark:border-border-dark bg-white dark:bg-slate-900 text-slate-900 dark:text-white px-4 py-2 focus:ring-2 focus:ring-primary focus:border-transparent transition-all">
+                        <option value="">{{ __('messages.admin_all_languages') }}</option>
+                        <option value="en">English</option>
+                        <option value="tr">Türkçe</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
         <div class="bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark rounded-xl overflow-hidden shadow-sm mb-8">
             <div class="overflow-x-auto">
                 <table class="w-full text-left text-sm">
@@ -36,7 +58,15 @@
                             <td class="px-6 py-4 text-slate-500 uppercase">{{ $post->locale }}</td>
                             <td class="px-6 py-4 text-right">
                                 <button class="text-slate-400 hover:text-primary transition-colors mr-2"><span class="material-symbols-outlined text-lg">edit</span></button>
-                                <button class="text-slate-400 hover:text-red-500 transition-colors"><span class="material-symbols-outlined text-lg">delete</span></button>
+                                <button
+                                    onclick="confirmAction(this, 'delete', [{{ $post->id }}])"
+                                    data-title="{{ __('messages.are_you_sure') }}"
+                                    data-text="{{ __('messages.delete_warning') }}"
+                                    data-confirm-text="{{ __('messages.yes_delete') }}"
+                                    data-cancel-text="{{ __('messages.cancel') }}"
+                                    class="text-slate-400 hover:text-red-500 transition-colors">
+                                    <span class="material-symbols-outlined text-lg">delete</span>
+                                </button>
                             </td>
                         </tr>
                         @empty

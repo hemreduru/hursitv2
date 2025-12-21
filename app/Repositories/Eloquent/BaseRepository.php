@@ -57,4 +57,9 @@ abstract class BaseRepository implements RepositoryInterface
     {
         return $this->model->orderBy('created_at', 'desc')->paginate($perPage);
     }
+
+    public function getModel()
+    {
+        return $this->model;
+    }
 }
