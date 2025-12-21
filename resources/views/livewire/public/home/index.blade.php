@@ -22,13 +22,12 @@
                         {{ __('messages.view_projects') }}
                     </a>
                 </div>
-                <div class="flex items-center justify-center md:justify-start gap-6 mt-2">
+                <div class="flex items-center justify-center md:justify-start gap-1 mt-2">
                      @if(isset($profile) && $profile->social_links)
                         @foreach($profile->social_links as $platform => $url)
-                             <a class="text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors" href="{{ $url }}">
+                             <a class="text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors p-2" href="{{ $url }}" target="_blank">
                                 <span class="sr-only">{{ ucfirst($platform) }}</span>
-                                <!-- Using simple text or icons would be better, reusing the svg from footer -->
-                                <span class="capitalize font-bold text-xs">{{ $platform }}</span>
+                                <i class="fa-brands fa-{{ strtolower($platform) }} text-xl"></i>
                              </a>
                         @endforeach
                     @endif

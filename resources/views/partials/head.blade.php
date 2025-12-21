@@ -19,9 +19,12 @@
 <meta property="twitter:description" content="{{ $meta_description ?? 'Freelance Full-Stack Engineer specializing in scalable web applications.' }}">
 <meta property="twitter:image" content="{{ $og_image ?? asset('images/og-default.jpg') }}">
 
+<link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 <!-- Tailwind -->
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries,typography"></script>
