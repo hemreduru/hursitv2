@@ -1,4 +1,5 @@
 import './bootstrap';
 import './swal';
-import './toastr';
+import './bootstrap';
+import './swal';
 

@@ -59,13 +59,11 @@
             </div>
 
              <div class="space-y-4">
-                <label class="block text-sm font-medium">{{ __('messages.admin_tags') }}</label>
-                <select wire:model="selectedTags" multiple class="w-full h-32 rounded-lg border-border-light dark:border-border-dark bg-white dark:bg-card-dark">
+                <x-select2 label="{{ __('messages.admin_tags') }}" wire:model="selectedTags" multiple>
                     @foreach($tags as $tag)
                         <option value="{{ $tag->id }}">{{ $tag->name }} ({{ $tag->locale }})</option>
                     @endforeach
-                </select>
-                <p class="text-xs text-slate-500">{{ __('messages.admin_select_multiple') }}</p>
+                </x-select2>
             </div>
         </div>
 

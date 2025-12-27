@@ -7,6 +7,7 @@
     <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script>
         // Check local storage or system preference, default to dark
@@ -31,6 +32,7 @@
 <body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display antialiased selection:bg-primary/30 selection:text-primary transition-colors duration-200">
     <div class="relative min-h-screen flex flex-col overflow-hidden">
         <header class="sticky top-0 z-50 w-full border-b border-border-light dark:border-border-dark bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-md">
+            <!-- Header content -->
             <div class="w-full px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
                 <div class="flex items-center gap-4">
                     <div class="size-10 bg-primary rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-primary/20">
@@ -38,12 +40,12 @@
                     </div>
                     <h2 class="hidden sm:block text-lg font-bold tracking-tight">{{ config('app.name') }} <span class="text-slate-400 font-normal ml-2 text-sm bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded">{{ __('messages.admin_badge') }}</span></h2>
                 </div>
+                <!-- ... Rest of header ... -->
                 <nav class="hidden md:flex items-center gap-6 lg:gap-8">
-                    <a class="text-sm font-medium text-slate-500 hover:text-primary transition-colors" href="{{ route('home') }}" target="_blank">{{ __('messages.admin_live_site') }}</a>
+                     <a class="text-sm font-medium text-slate-500 hover:text-primary transition-colors" href="{{ route('home') }}" target="_blank">{{ __('messages.admin_live_site') }}</a>
                 </nav>
-                <div class="flex items-center gap-3 md:gap-4">
+                 <div class="flex items-center gap-3 md:gap-4">
                     <div class="flex items-center bg-slate-200 dark:bg-slate-800 rounded-lg p-0.5">
-                        <!-- Locale Switcher for Admin (same logic as public) -->
                         <a href="{{ route('set-locale', 'en') }}" class="px-2 py-1 rounded text-xs font-bold transition-all {{ app()->getLocale() === 'en' ? 'bg-white dark:bg-slate-600 shadow-sm text-slate-900 dark:text-white' : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white' }}">EN</a>
                         <a href="{{ route('set-locale', 'tr') }}" class="px-2 py-1 rounded text-xs font-bold transition-all {{ app()->getLocale() === 'tr' ? 'bg-white dark:bg-slate-600 shadow-sm text-slate-900 dark:text-white' : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white' }}">TR</a>
                     </div>
@@ -51,7 +53,6 @@
                         <span class="material-symbols-outlined hidden dark:block text-xl">light_mode</span>
                         <span class="material-symbols-outlined block dark:hidden text-xl">dark_mode</span>
                     </button>
-                    <!-- Mobile Menu Button -->
                     <button @click="sidebarOpen = !sidebarOpen" class="lg:hidden p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-lg transition-colors">
                         <span class="material-symbols-outlined text-xl">menu</span>
                     </button>
@@ -61,11 +62,10 @@
                 </div>
             </div>
         </header>
+
         <div class="flex flex-1 overflow-hidden" x-data="{ sidebarOpen: false }">
-            <!-- Mobile Sidebar Backdrop -->
             <div x-show="sidebarOpen" @click="sidebarOpen = false" x-transition:enter="transition-opacity ease-linear duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition-opacity ease-linear duration-300" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 bg-slate-900/80 z-40 lg:hidden"></div>
 
-            <!-- Sidebar -->
             <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'" class="fixed inset-y-0 left-0 z-50 w-64 flex flex-col border-r border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-auto lg:flex lg:w-64 transform">
                 <div class="flex items-center justify-between p-4 lg:hidden border-b border-border-light dark:border-border-dark">
                     <span class="font-bold text-lg">{{ __('messages.admin_menu') }}</span>
@@ -74,7 +74,6 @@
                     </button>
                 </div>
                 <div class="p-4 space-y-1 overflow-y-auto flex-1">
-
                     <a class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg {{ request()->routeIs('admin.dashboard') ? 'bg-primary/10 text-primary' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800' }} transition-colors" href="{{ route('admin.dashboard') }}">
                         <span class="material-symbols-outlined text-xl">dashboard</span>
                         {{ __('messages.admin_nav_dashboard') }}
@@ -87,7 +86,7 @@
                         <span class="material-symbols-outlined text-xl">rocket_launch</span>
                         {{ __('messages.admin_nav_projects') }}
                     </a>
-                    <a class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg {{ request()->routeIs('admin.profile.*') ? 'bg-primary/10 text-primary' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800' }} transition-colors" href="{{ route('admin.profile.index') }}">
+                     <a class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg {{ request()->routeIs('admin.profile.*') ? 'bg-primary/10 text-primary' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800' }} transition-colors" href="{{ route('admin.profile.index') }}">
                         <span class="material-symbols-outlined text-xl">settings</span>
                         {{ __('messages.admin_nav_settings') }}
                     </a>
@@ -107,6 +106,11 @@
             </main>
         </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     @livewireScripts
 </body>
 </html>
