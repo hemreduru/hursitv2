@@ -56,11 +56,19 @@ class ProjectService
 
     public function create(array $data)
     {
-        return $this->projectRepository->create($data);
+        try {
+            return $this->projectRepository->create($data);
+        } catch (\Exception $e) {
+            throw new \Exception(__('messages.error_create_project') . ' ' . $e->getMessage());
+        }
     }
 
     public function update(int $id, array $data)
     {
-        return $this->projectRepository->update($id, $data);
+        try {
+            return $this->projectRepository->update($id, $data);
+        } catch (\Exception $e) {
+            throw new \Exception(__('messages.error_update_project') . ' ' . $e->getMessage());
+        }
     }
 }

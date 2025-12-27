@@ -138,4 +138,6 @@ return [
     'admin_featured_only' => 'Sadece Öne Çıkanlar',
     'admin_standard_only' => 'Sadece Standart',
     'admin_no_projects' => 'Proje bulunamadı.',
+    'error_create_project' => 'Proje oluşturulurken bir hata oluştu.',
+    'error_update_project' => 'Proje güncellenirken bir hata oluştu.',
 ];

@@ -138,4 +138,6 @@ return [
     'admin_featured_only' => 'Featured Only',
     'admin_standard_only' => 'Standard Only',
     'admin_no_projects' => 'No projects found.',
+    'error_create_project' => 'An error occurred while creating the project.',
+    'error_update_project' => 'An error occurred while updating the project.',
 ];
