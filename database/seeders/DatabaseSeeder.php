@@ -15,9 +15,9 @@ class DatabaseSeeder extends Seeder
     {
         // 1. Create Admin User
         \App\Models\User::factory()->create([
-            'name' => 'Admin User',
-            'email' => 'admin@example.com',
-            'password' => \Illuminate\Support\Facades\Hash::make('password'),
+            'name' => 'emre',
+            'email' => 'hemreduru@gmail.com',
+            'password' => \Illuminate\Support\Facades\Hash::make('emre2000'),
         ]);
 
         // 2. Global Skills

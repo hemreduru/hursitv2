@@ -53,6 +53,7 @@ Route::middleware([
     \App\Http\Middleware\SetLocale::class,
 ])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', AdminDashboard::class)->name('dashboard');
+    Route::get('/', AdminDashboard::class);
 
     // Blog
     Route::get('/blog', AdminBlogIndex::class)->name('blog.index');
