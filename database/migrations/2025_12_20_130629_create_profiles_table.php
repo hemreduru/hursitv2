@@ -14,11 +14,12 @@ return new class extends Migration
         Schema::create('profiles', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('title');
-            $table->text('bio');
+            $table->string('title_en');
+            $table->string('title_tr');
+            $table->text('bio_en');
+            $table->text('bio_tr');
             $table->string('contact_email');
             $table->json('social_links')->nullable();
-            $table->string('locale')->index(); // 'en' or 'tr'
             $table->timestamps();
         });
     }

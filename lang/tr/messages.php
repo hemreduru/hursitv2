@@ -63,6 +63,7 @@ return [
     'admin_date' => 'Tarih',
     'admin_lang' => 'Dil',
     'admin_actions' => 'İşlemler',
+    'admin_settings' => 'Ayarlar',
     'admin_no_posts' => 'Yazı bulunamadı.',
     'admin_edit_post' => 'Yazıyı Düzenle',
     'admin_create_post' => 'Yazı Oluştur',

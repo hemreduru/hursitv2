@@ -16,6 +16,14 @@ class Edit extends Component
             $project = Project::findOrFail($id);
             $this->form->setProject($project);
         }
+    public function updated($name, $value)
+    {
+        if ($name === 'form.title_tr') {
+            $this->form->slug_tr = \Illuminate\Support\Str::slug($value);
+        }
+        if ($name === 'form.title_en') {
+            $this->form->slug_en = \Illuminate\Support\Str::slug($value);
+        }
     }
 
     public function save(ProjectService $projectService)

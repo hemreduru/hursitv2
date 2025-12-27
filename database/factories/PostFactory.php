@@ -16,15 +16,27 @@ class PostFactory extends Factory
      */
     public function definition(): array
     {
+        $trFaker = \Faker\Factory::create('tr_TR');
+
+        $titleEn = $this->faker->sentence(4);
+        $titleTr = $trFaker->sentence(4);
+
         return [
-            'title' => $this->faker->sentence(4),
-            'slug' => $this->faker->slug(),
-            'short_description' => $this->faker->sentence(10),
-            'content' => $this->faker->paragraphs(5, true),
             'status' => 'published',
             'published_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
             'reading_time' => $this->faker->numberBetween(1, 15),
-            'locale' => 'en',
+
+            // EN
+            'title_en' => $titleEn,
+            'slug_en' => \Illuminate\Support\Str::slug($titleEn),
+            'short_description_en' => $this->faker->sentence(10),
+            'content_en' => $this->faker->paragraphs(5, true),
+
+            // TR
+            'title_tr' => $titleTr,
+            'slug_tr' => \Illuminate\Support\Str::slug($titleTr),
+            'short_description_tr' => $trFaker->sentence(10),
+            'content_tr' => $trFaker->paragraphs(5, true),
         ];
     }
 }

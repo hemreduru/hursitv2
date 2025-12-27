@@ -15,15 +15,14 @@ class EloquentProjectRepository extends BaseRepository implements ProjectReposit
 
     public function getFeatured(string $locale): Collection
     {
-        return $this->model->where('locale', $locale)
+        return $this->model
             ->where('is_featured', true)
             ->get();
     }
 
     public function findBySlug(string $slug, string $locale)
     {
-        return $this->model->where('slug', $slug)
-            ->where('locale', $locale)
+        return $this->model->where("slug_{$locale}", $slug)
             ->first();
     }
 }

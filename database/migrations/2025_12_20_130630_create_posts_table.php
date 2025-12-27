@@ -13,14 +13,17 @@ return new class extends Migration
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->string('slug')->index();
-            $table->string('short_description')->nullable();
-            $table->longText('content');
-            $table->string('status')->default('draft'); // draft, published
+            $table->string('title_en');
+            $table->string('title_tr');
+            $table->string('slug_en')->unique();
+            $table->string('slug_tr')->unique();
+            $table->string('short_description_en')->nullable();
+            $table->string('short_description_tr')->nullable();
+            $table->longText('content_en');
+            $table->longText('content_tr');
+            $table->string('status')->default('draft');
             $table->timestamp('published_at')->nullable();
             $table->integer('reading_time')->default(5);
-            $table->string('locale')->index();
             $table->timestamps();
         });
     }

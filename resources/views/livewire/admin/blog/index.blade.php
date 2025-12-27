@@ -5,11 +5,10 @@
                 <h1 class="text-2xl font-bold tracking-tight">{{ __('messages.admin_blog_management') }}</h1>
                 <p class="text-slate-500 dark:text-slate-400 mt-1">{{ __('messages.admin_create_manage_blog') }}</p>
             </div>
-            <!-- TODO: Add Create Route -->
-            <button class="flex items-center justify-center gap-2 bg-primary hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-medium shadow-lg shadow-primary/20 transition-all active:scale-95 text-sm">
+            <a href="{{ route('admin.blog.create') }}" class="flex items-center justify-center gap-2 bg-primary hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-medium shadow-lg shadow-primary/20 transition-all active:scale-95 text-sm">
                 <span class="material-symbols-outlined text-lg">add</span>
                 {{ __('messages.admin_new_post') }}
-            </button>
+            </a>
         </div>
         <div class="bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark rounded-xl p-4 mb-6 shadow-sm">
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -23,13 +22,7 @@
                         <option value="draft">{{ __('messages.status_draft') }}</option>
                     </select>
                 </div>
-                <div>
-                    <select wire:model.live="locale" class="w-full rounded-lg border-border-light dark:border-border-dark bg-white dark:bg-slate-900 text-slate-900 dark:text-white px-4 py-2 focus:ring-2 focus:ring-primary focus:border-transparent transition-all">
-                        <option value="">{{ __('messages.admin_all_languages') }}</option>
-                        <option value="en">English</option>
-                        <option value="tr">Türkçe</option>
-                    </select>
-                </div>
+<!-- Removed locale filter -->
             </div>
         </div>
 
@@ -41,7 +34,6 @@
                             <th class="px-6 py-3 font-semibold text-slate-900 dark:text-white">{{ __('messages.admin_title') }}</th>
                             <th class="px-6 py-3 font-semibold text-slate-900 dark:text-white">{{ __('messages.admin_status') }}</th>
                             <th class="px-6 py-3 font-semibold text-slate-900 dark:text-white">{{ __('messages.admin_date') }}</th>
-                            <th class="px-6 py-3 font-semibold text-slate-900 dark:text-white">{{ __('messages.admin_lang') }}</th>
                             <th class="px-6 py-3 font-semibold text-slate-900 dark:text-white text-right">{{ __('messages.admin_actions') }}</th>
                         </tr>
                     </thead>
@@ -55,9 +47,8 @@
                                 </span>
                             </td>
                             <td class="px-6 py-4 text-slate-500">{{ $post->published_at ? $post->published_at->format('M d, Y') : '-' }}</td>
-                            <td class="px-6 py-4 text-slate-500 uppercase">{{ $post->locale }}</td>
                             <td class="px-6 py-4 text-right">
-                                <button class="text-slate-400 hover:text-primary transition-colors mr-2"><span class="material-symbols-outlined text-lg">edit</span></button>
+                                <a href="{{ route('admin.blog.edit', $post->id) }}" class="text-slate-400 hover:text-primary transition-colors mr-2"><span class="material-symbols-outlined text-lg">edit</span></a>
                                 <button
                                     onclick="confirmAction(this, 'delete', [{{ $post->id }}])"
                                     data-title="{{ __('messages.are_you_sure') }}"

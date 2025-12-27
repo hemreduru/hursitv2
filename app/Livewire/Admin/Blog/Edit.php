@@ -6,76 +6,58 @@ use App\Models\Post;
 use App\Models\Tag;
 use App\Services\PostService;
 use Livewire\Component;
+use App\Livewire\Forms\PostForm;
 
 class Edit extends Component
 {
-    public $post;
-    public $title;
-    public $slug;
-    public $short_description;
-    public $content;
-    public $status = 'draft';
-    public $published_at;
-    public $reading_time;
-    public $locale = 'en';
-    public $selectedTags = [];
+    public PostForm $form;
 
     public function mount($id = null)
     {
         if ($id) {
-            $this->post = Post::findOrFail($id);
-            $this->title = $this->post->title;
-            $this->slug = $this->post->slug;
-            $this->short_description = $this->post->short_description;
-            $this->content = $this->post->content;
-            $this->status = $this->post->status;
-            $this->published_at = $this->post->published_at ? $this->post->published_at->format('Y-m-d\TH:i') : null;
-            $this->reading_time = $this->post->reading_time;
-            $this->locale = $this->post->locale;
-            $this->selectedTags = $this->post->tags->pluck('id')->toArray();
+            $post = Post::findOrFail($id);
+            $this->form->setPost($post);
         } else {
-            $this->published_at = now()->format('Y-m-d\TH:i');
+            $this->form->published_at = now()->format('Y-m-d\TH:i');
+        }
+    }
+
+    public function updated($name, $value)
+    {
+        if ($name === 'form.title_tr') {
+            $this->form->slug_tr = \Illuminate\Support\Str::slug($value);
+        }
+        if ($name === 'form.title_en') {
+            $this->form->slug_en = \Illuminate\Support\Str::slug($value);
         }
     }
 
     public function save(PostService $postService)
     {
-        $this->validate([
-            'title' => 'required|string|max:255',
-            'slug' => 'required|string|max:255|unique:posts,slug,' . ($this->post->id ?? 'NULL'),
-            'short_description' => 'required|string',
-            'content' => 'required|string',
-            'status' => 'required|in:draft,published',
-            'locale' => 'required|in:en,tr',
-            'reading_time' => 'required|integer',
-        ]);
+        $data = $this->form->prepareData();
 
-        $data = [
-            'title' => $this->title,
-            'slug' => $this->slug,
-            'short_description' => $this->short_description,
-            'content' => $this->content,
-            'status' => $this->status,
-            'published_at' => $this->published_at,
-            'reading_time' => $this->reading_time,
-            'locale' => $this->locale,
-            'tags' => $this->selectedTags,
-        ];
-
-        if ($this->post) {
-            $postService->update($this->post->id, $data);
-            session()->flash('message', 'Post updated successfully.');
-        } else {
-            $postService->create($data);
-            session()->flash('message', 'Post created successfully.');
-            return redirect()->route('admin.blog.index');
+        try {
+            if ($this->form->post) {
+                $postService->update($this->form->post->id, $data);
+                session()->flash('message', 'Post updated successfully.');
+            } else {
+                $postService->create($data);
+                session()->flash('message', 'Post created successfully.');
+                return redirect()->route('admin.blog.index');
+            }
+        } catch (\Exception $e) {
+             session()->flash('error', __('messages.error_create_project') . ': ' . $e->getMessage()); // Reusing generic error key or creating specific one?
+             // User removed error keys. I'll use simple string or general error.
+             // Actually user reverted changes. I'll assume keys might be missing.
+             session()->flash('error', 'Operation failed: ' . $e->getMessage());
         }
     }
 
     public function render()
     {
         return view('livewire.admin.blog.edit', [
-            'tags' => Tag::all()
+            'tagsEn' => Tag::where('locale', 'en')->get(),
+            'tagsTr' => Tag::where('locale', 'tr')->get(),
         ])->layout('layouts.admin');
     }
 }

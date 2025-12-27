@@ -6,59 +6,97 @@
         </a>
     </div>
 
-    <form wire:submit.prevent="save" class="space-y-6">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-             <div class="space-y-4 md:col-span-2">
-                <label class="block text-sm font-medium">{{ __('messages.admin_title') }}</label>
-                <input wire:model="form.title" type="text" class="w-full rounded-lg border-border-light dark:border-border-dark bg-white dark:bg-card-dark">
-                @error('form.title') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-            </div>
+    <form wire:submit.prevent="save" class="space-y-6" x-data="{ lang: 'tr' }">
 
-            <div class="space-y-4">
-                <label class="block text-sm font-medium">{{ __('messages.admin_slug') }}</label>
-                <input wire:model="form.slug" type="text" class="w-full rounded-lg border-border-light dark:border-border-dark bg-white dark:bg-card-dark">
-                 @error('form.slug') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-            </div>
+        <!-- Language Tabs -->
+        <div class="flex gap-2 border-b border-border-light dark:border-border-dark pb-4 overflow-x-auto">
+            <button type="button" @click="lang = 'tr'" :class="lang === 'tr' ? 'bg-primary/10 text-primary border-primary ring-1 ring-primary' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white border-transparent hover:bg-slate-100 dark:hover:bg-slate-800'" class="px-4 py-2 rounded-lg font-bold text-sm border transition-all flex items-center gap-2">
+                <span class="text-lg">🇹🇷</span> Türkçe
+            </button>
+            <button type="button" @click="lang = 'en'" :class="lang === 'en' ? 'bg-primary/10 text-primary border-primary ring-1 ring-primary' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white border-transparent hover:bg-slate-100 dark:hover:bg-slate-800'" class="px-4 py-2 rounded-lg font-bold text-sm border transition-all flex items-center gap-2">
+                <span class="text-lg">🇬🇧</span> English
+            </button>
+        </div>
 
-            <div class="space-y-4">
-                <label class="block text-sm font-medium">{{ __('messages.admin_lang') }}</label>
-                <select wire:model="form.locale" class="w-full rounded-lg border-border-light dark:border-border-dark bg-white dark:bg-card-dark">
-                    <option value="en">English (EN)</option>
-                    <option value="tr">Turkish (TR)</option>
-                </select>
+        <!-- TR Section -->
+        <div x-show="lang === 'tr'" class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-4">
+                    <label class="block text-sm font-medium">{{ __('messages.admin_title') }} (TR) <span class="text-red-500">*</span></label>
+                    <input wire:model.live.debounce.500ms="form.title_tr" type="text" class="w-full rounded-lg border-border-light dark:border-border-dark bg-white dark:bg-card-dark focus:ring-primary focus:border-primary transition-all">
+                    @error('form.title_tr') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                </div>
+                <div class="space-y-4">
+                    <label class="block text-sm font-medium">{{ __('messages.admin_slug') }} (TR) <span class="text-red-500">*</span></label>
+                    <input wire:model="form.slug_tr" type="text" class="w-full rounded-lg border-border-light dark:border-border-dark bg-white dark:bg-card-dark focus:ring-primary focus:border-primary transition-all">
+                     @error('form.slug_tr') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                </div>
+                <div class="space-y-4 md:col-span-2">
+                    <label class="block text-sm font-medium">{{ __('messages.admin_short_desc') }} (TR) <span class="text-red-500">*</span></label>
+                    <textarea wire:model="form.short_description_tr" rows="3" class="w-full rounded-lg border-border-light dark:border-border-dark bg-white dark:bg-card-dark focus:ring-primary focus:border-primary transition-all"></textarea>
+                     @error('form.short_description_tr') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                </div>
+                 <div class="space-y-4 md:col-span-2">
+                    <label class="block text-sm font-medium">{{ __('messages.admin_content') }} (TR) <span class="text-red-500">*</span></label>
+                    <textarea wire:model="form.content_tr" rows="15" class="w-full font-mono text-sm rounded-lg border-border-light dark:border-border-dark bg-white dark:bg-card-dark focus:ring-primary focus:border-primary transition-all"></textarea>
+                     @error('form.content_tr') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                </div>
             </div>
+        </div>
 
-             <div class="space-y-4 md:col-span-2">
-                <label class="block text-sm font-medium">{{ __('messages.admin_short_desc') }}</label>
-                <textarea wire:model="form.short_description" rows="3" class="w-full rounded-lg border-border-light dark:border-border-dark bg-white dark:bg-card-dark"></textarea>
-                 @error('form.short_description') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+        <!-- EN Section -->
+        <div x-show="lang === 'en'" class="space-y-6" style="display: none;">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                 <div class="space-y-4">
+                    <label class="block text-sm font-medium">{{ __('messages.admin_title') }} (EN) <span class="text-red-500">*</span></label>
+                    <input wire:model.live.debounce.500ms="form.title_en" type="text" class="w-full rounded-lg border-border-light dark:border-border-dark bg-white dark:bg-card-dark focus:ring-primary focus:border-primary transition-all">
+                    @error('form.title_en') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                </div>
+                <div class="space-y-4">
+                    <label class="block text-sm font-medium">{{ __('messages.admin_slug') }} (EN) <span class="text-red-500">*</span></label>
+                    <input wire:model="form.slug_en" type="text" class="w-full rounded-lg border-border-light dark:border-border-dark bg-white dark:bg-card-dark focus:ring-primary focus:border-primary transition-all">
+                     @error('form.slug_en') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                </div>
+                <div class="space-y-4 md:col-span-2">
+                    <label class="block text-sm font-medium">{{ __('messages.admin_short_desc') }} (EN) <span class="text-red-500">*</span></label>
+                    <textarea wire:model="form.short_description_en" rows="3" class="w-full rounded-lg border-border-light dark:border-border-dark bg-white dark:bg-card-dark focus:ring-primary focus:border-primary transition-all"></textarea>
+                     @error('form.short_description_en') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                </div>
+                 <div class="space-y-4 md:col-span-2">
+                    <label class="block text-sm font-medium">{{ __('messages.admin_content') }} (EN) <span class="text-red-500">*</span></label>
+                    <textarea wire:model="form.content_en" rows="15" class="w-full font-mono text-sm rounded-lg border-border-light dark:border-border-dark bg-white dark:bg-card-dark focus:ring-primary focus:border-primary transition-all"></textarea>
+                     @error('form.content_en') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                </div>
             </div>
+        </div>
 
-             <div class="space-y-4 md:col-span-2">
-                <label class="block text-sm font-medium">{{ __('messages.admin_content') }} (Markdown/HTML)</label>
-                <textarea wire:model="form.content" rows="15" class="w-full font-mono text-sm rounded-lg border-border-light dark:border-border-dark bg-white dark:bg-card-dark"></textarea>
-                 @error('form.content') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-            </div>
+        <!-- Shared Section -->
+        <div class="pt-6 border-t border-border-light dark:border-border-dark">
+             <h3 class="text-lg font-bold mb-6 flex items-center gap-2">
+                <span class="material-symbols-outlined">settings_suggest</span>
+                {{ __('messages.admin_settings') }}
+             </h3>
+             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-4 md:col-span-2">
+                    <label class="block text-sm font-medium">{{ __('messages.admin_tech_stack') }}</label>
+                    <input wire:model="form.tech_stack_string" type="text" placeholder="{{ __('messages.admin_tech_stack_ph') }}" class="w-full rounded-lg border-border-light dark:border-border-dark bg-white dark:bg-card-dark focus:ring-primary focus:border-primary transition-all">
+                </div>
 
-             <div class="space-y-4 md:col-span-2">
-                <label class="block text-sm font-medium">{{ __('messages.admin_tech_stack') }}</label>
-                <input wire:model="form.tech_stack_string" type="text" placeholder="{{ __('messages.admin_tech_stack_ph') }}" class="w-full rounded-lg border-border-light dark:border-border-dark bg-white dark:bg-card-dark">
-            </div>
+                <div class="space-y-4">
+                    <label class="block text-sm font-medium">{{ __('messages.admin_repo_url') }}</label>
+                    <input wire:model="form.url_repo" type="url" class="w-full rounded-lg border-border-light dark:border-border-dark bg-white dark:bg-card-dark focus:ring-primary focus:border-primary transition-all">
+                </div>
 
-            <div class="space-y-4">
-                <label class="block text-sm font-medium">{{ __('messages.admin_repo_url') }}</label>
-                <input wire:model="form.url_repo" type="url" class="w-full rounded-lg border-border-light dark:border-border-dark bg-white dark:bg-card-dark">
-            </div>
+                <div class="space-y-4">
+                    <label class="block text-sm font-medium">{{ __('messages.admin_live_url') }}</label>
+                    <input wire:model="form.url_live" type="url" class="w-full rounded-lg border-border-light dark:border-border-dark bg-white dark:bg-card-dark focus:ring-primary focus:border-primary transition-all">
+                </div>
 
-            <div class="space-y-4">
-                <label class="block text-sm font-medium">{{ __('messages.admin_live_url') }}</label>
-                <input wire:model="form.url_live" type="url" class="w-full rounded-lg border-border-light dark:border-border-dark bg-white dark:bg-card-dark">
-            </div>
-
-            <div class="space-y-4 md:col-span-2">
-                <div class="flex items-center gap-3">
-                    <input wire:model="form.is_featured" type="checkbox" id="is_featured" class="rounded border-border-light dark:border-border-dark bg-white dark:bg-card-dark text-primary focus:ring-primary">
-                    <label for="is_featured" class="text-sm font-medium">{{ __('messages.admin_feature_homepage') }}</label>
+                <div class="space-y-4 md:col-span-2">
+                    <div class="flex items-center gap-3 p-4 rounded-lg border border-border-light dark:border-border-dark bg-slate-50 dark:bg-slate-800/50">
+                        <input wire:model="form.is_featured" type="checkbox" id="is_featured" class="w-5 h-5 rounded border-gray-300 text-primary focus:ring-primary">
+                        <label for="is_featured" class="text-sm font-medium select-none cursor-pointer">{{ __('messages.admin_feature_homepage') }}</label>
+                    </div>
                 </div>
             </div>
         </div>

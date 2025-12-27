@@ -26,51 +26,41 @@ class DatabaseSeeder extends Seeder
             \App\Models\Skill::factory(5)->create(['category' => $category]);
         }
 
-        // 3. Localized Content
+        // 3. Profile (Single row, dual content)
+        \App\Models\Profile::factory()->create([
+            'name' => 'Hurşit Emre Duru',
+            'title_en' => 'Senior Full-Stack Engineer',
+            'title_tr' => 'Kıdemli Full-Stack Geliştirici',
+        ]);
+
+        // 4. Experiences (Still single-language rows, so we loop)
         foreach (['en', 'tr'] as $locale) {
             $faker = \Faker\Factory::create($locale === 'tr' ? 'tr_TR' : 'en_US');
-
-            // Profile
-            \App\Models\Profile::factory()->create([
-                'locale' => $locale,
-                'name' => $locale === 'tr' ? 'Hurşit Emre Duru' : 'Hursit Emre Duru',
-                'title' => $locale === 'tr' ? 'Kıdemli Full-Stack Geliştirici' : 'Senior Full-Stack Engineer',
-                'bio' => $faker->paragraph(3),
-            ]);
-
-            // Experiences
             \App\Models\Experience::factory(3)->create([
                 'locale' => $locale,
                 'role' => $faker->jobTitle(),
                 'company' => $faker->company(),
                 'description' => $faker->paragraph(),
             ]);
-
-            // Tags
-            $tags = \App\Models\Tag::factory(8)->create([
-                'locale' => $locale,
-                'name' => fn() => ucfirst($faker->unique()->word()),
-                'slug' => fn(array $attributes) => \Illuminate\Support\Str::slug($attributes['name']),
-            ]);
-
-            // Projects
-            \App\Models\Project::factory(6)->create([
-                'locale' => $locale,
-                'title' => fn() => $faker->sentence(3),
-                'short_description' => fn() => $faker->sentence(10),
-                'content' => fn() => $faker->paragraphs(3, true),
-            ]);
-
-            // Posts
-            \App\Models\Post::factory(10)->create([
-                'locale' => $locale,
-                'title' => fn() => $faker->sentence(4),
-                'short_description' => fn() => $faker->sentence(10),
-                'content' => fn() => $faker->paragraphs(5, true),
-            ])->each(function ($post) use ($tags) {
-                // Attach random tags from the SAME locale
-                $post->tags()->attach($tags->random(2));
-            });
         }
+
+        // 5. Tags (Single-language rows)
+        $enTags = \App\Models\Tag::factory(5)->create(['locale' => 'en']);
+        $trTags = \App\Models\Tag::factory(5)->create([
+            'locale' => 'tr',
+            'name' => fn() => ucfirst(\Faker\Factory::create('tr_TR')->unique()->word())
+        ]);
+
+        $allTags = $enTags->merge($trTags);
+
+        // 6. Projects (Dual content)
+        \App\Models\Project::factory(6)->create();
+
+        // 7. Posts (Dual content)
+        \App\Models\Post::factory(10)->create()
+            ->each(function ($post) use ($allTags) {
+                // Attach random tags (mix of EN and TR)
+                $post->tags()->attach($allTags->random(3));
+            });
     }
 }

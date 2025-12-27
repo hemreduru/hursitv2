@@ -63,6 +63,7 @@ return [
     'admin_date' => 'Date',
     'admin_lang' => 'Lang',
     'admin_actions' => 'Actions',
+    'admin_settings' => 'Settings',
     'admin_no_posts' => 'No posts found.',
     'admin_edit_post' => 'Edit Post',
     'admin_create_post' => 'Create Post',

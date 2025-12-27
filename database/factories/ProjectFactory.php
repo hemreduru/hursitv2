@@ -16,18 +16,30 @@ class ProjectFactory extends Factory
      */
     public function definition(): array
     {
+        $trFaker = \Faker\Factory::create('tr_TR');
+
+        $titleEn = $this->faker->sentence(3);
+        $titleTr = $trFaker->sentence(3);
+
         return [
-            'title' => $this->faker->sentence(3),
-            'slug' => $this->faker->slug(),
-            'short_description' => $this->faker->sentence(10),
-            'content' => $this->faker->paragraphs(3, true),
             'tech_stack' => $this->faker->words(5),
             'urls' => [
                 'repo' => $this->faker->url(),
                 'live' => $this->faker->url()
             ],
             'is_featured' => $this->faker->boolean(20),
-            'locale' => 'en', // Default
+
+            // EN
+            'title_en' => $titleEn,
+            'slug_en' => \Illuminate\Support\Str::slug($titleEn),
+            'short_description_en' => $this->faker->sentence(10),
+            'content_en' => $this->faker->paragraphs(3, true),
+
+            // TR
+            'title_tr' => $titleTr,
+            'slug_tr' => \Illuminate\Support\Str::slug($titleTr),
+            'short_description_tr' => $trFaker->sentence(10),
+            'content_tr' => $trFaker->paragraphs(3, true),
         ];
     }
 }

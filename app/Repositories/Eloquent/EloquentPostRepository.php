@@ -15,7 +15,7 @@ class EloquentPostRepository extends BaseRepository implements PostRepositoryInt
 
     public function getPublished(string $locale): Collection
     {
-        return $this->model->where('locale', $locale)
+        return $this->model
             ->where('status', 'published')
             ->orderBy('published_at', 'desc')
             ->get();
@@ -23,8 +23,7 @@ class EloquentPostRepository extends BaseRepository implements PostRepositoryInt
 
     public function findBySlug(string $slug, string $locale)
     {
-        return $this->model->where('slug', $slug)
-            ->where('locale', $locale)
+        return $this->model->where("slug_{$locale}", $slug)
             ->where('status', 'published')
             ->first();
     }

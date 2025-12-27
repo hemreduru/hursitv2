@@ -16,17 +16,24 @@ class ProfileFactory extends Factory
      */
     public function definition(): array
     {
+        $trFaker = \Faker\Factory::create('tr_TR');
+
         return [
             'name' => $this->faker->name(),
-            'title' => $this->faker->jobTitle(),
-            'bio' => $this->faker->paragraph(),
             'contact_email' => $this->faker->safeEmail(),
             'social_links' => [
                 'github' => 'https://github.com/' . $this->faker->userName(),
                 'twitter' => 'https://twitter.com/' . $this->faker->userName(),
                 'linkedin' => 'https://linkedin.com/in/' . $this->faker->userName(),
             ],
-            'locale' => 'en',
+
+            // EN
+            'title_en' => $this->faker->jobTitle(),
+            'bio_en' => $this->faker->paragraph(),
+
+            // TR
+            'title_tr' => $trFaker->jobTitle(),
+            'bio_tr' => $trFaker->paragraph(),
         ];
     }
 }

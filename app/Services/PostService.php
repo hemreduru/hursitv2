@@ -65,17 +65,16 @@ class PostService
 
         if (!empty($filters['search'])) {
             $query->where(function ($q) use ($filters) {
-                $q->where('title', 'like', '%' . $filters['search'] . '%')
-                  ->orWhere('content', 'like', '%' . $filters['search'] . '%');
+                $term = $filters['search'];
+                $q->where('title_en', 'like', '%' . $term . '%')
+                  ->orWhere('title_tr', 'like', '%' . $term . '%')
+                  ->orWhere('content_en', 'like', '%' . $term . '%')
+                  ->orWhere('content_tr', 'like', '%' . $term . '%');
             });
         }
 
         if (!empty($filters['status'])) {
             $query->where('status', $filters['status']);
-        }
-
-        if (!empty($filters['locale'])) {
-            $query->where('locale', $filters['locale']);
         }
 
         return $query->latest()->paginate($perPage);

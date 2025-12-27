@@ -11,4 +11,9 @@ class EloquentProfileRepository extends BaseRepository implements ProfileReposit
     {
         parent::__construct($model);
     }
+
+    public function getByLocale(string $locale): \Illuminate\Database\Eloquent\Collection
+    {
+        return $this->model->all();
+    }
 }

@@ -13,14 +13,17 @@ return new class extends Migration
     {
         Schema::create('projects', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->string('slug');
-            $table->string('short_description');
-            $table->longText('content')->nullable(); // Extended details
+            $table->string('title_en');
+            $table->string('title_tr');
+            $table->string('slug_en')->unique();
+            $table->string('slug_tr')->unique();
+            $table->string('short_description_en');
+            $table->string('short_description_tr');
+            $table->longText('content_en');
+            $table->longText('content_tr');
             $table->json('tech_stack')->nullable();
-            $table->json('urls')->nullable(); // { "repo": "...", "live": "..." }
+            $table->json('urls')->nullable();
             $table->boolean('is_featured')->default(false);
-            $table->string('locale')->index();
             $table->timestamps();
         });
     }

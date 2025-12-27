@@ -22,13 +22,7 @@
                         <option value="0">{{ __('messages.admin_standard_only') }}</option>
                     </select>
                 </div>
-                <div>
-                    <select wire:model.live="locale" class="w-full rounded-lg border-border-light dark:border-border-dark bg-white dark:bg-slate-900 text-slate-900 dark:text-white px-4 py-2 focus:ring-2 focus:ring-primary focus:border-transparent transition-all">
-                         <option value="">{{ __('messages.admin_all_languages') }}</option>
-                        <option value="en">English</option>
-                        <option value="tr">Türkçe</option>
-                    </select>
-                </div>
+<!-- Removed locale filter -->
             </div>
         </div>
 
@@ -40,7 +34,6 @@
                             <th class="px-6 py-3 font-semibold text-slate-900 dark:text-white">{{ __('messages.admin_title') }}</th>
                             <th class="px-6 py-3 font-semibold text-slate-900 dark:text-white">{{ __('messages.admin_featured') }}</th>
                             <th class="px-6 py-3 font-semibold text-slate-900 dark:text-white">{{ __('messages.admin_tech_stack') }}</th>
-                             <th class="px-6 py-3 font-semibold text-slate-900 dark:text-white">{{ __('messages.admin_lang') }}</th>
                             <th class="px-6 py-3 font-semibold text-slate-900 dark:text-white text-right">{{ __('messages.admin_actions') }}</th>
                         </tr>
                     </thead>
@@ -60,7 +53,6 @@
                                     {{ implode(', ', array_slice($project->tech_stack, 0, 3)) }}{{ count($project->tech_stack) > 3 ? '...' : '' }}
                                 @endif
                             </td>
-                            <td class="px-6 py-4 text-slate-500 uppercase">{{ $project->locale }}</td>
                             <td class="px-6 py-4 text-right">
                                 <a href="{{ route('admin.projects.edit', $project->id) }}" class="text-slate-400 hover:text-primary transition-colors mr-2 inline-block"><span class="material-symbols-outlined text-lg">edit</span></a>
                                 <button
