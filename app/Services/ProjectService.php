@@ -47,7 +47,7 @@ class ProjectService
         }
 
         if (isset($filters['featured']) && $filters['featured'] !== '') {
-            $query->where('featured', $filters['featured']);
+            $query->where('is_featured', $filters['featured']);
         }
 
         if (!empty($filters['locale'])) {
