@@ -103,38 +103,32 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup SSH
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/deploy_key
-          chmod 600 ~/.ssh/deploy_key
-          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
-
       - name: Deploy to Production Server
+        env:
+          SSH_KEY: ${{ secrets.SSH_KEY }}
         run: |
-          ssh -i ~/.ssh/deploy_key ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'ENDSSH'
+          # Dynamically determine branch
+          BRANCH=${GITHUB_REF#refs/heads/}
+
+          ssh -o StrictHostKeyChecking=no -i <(echo "$SSH_KEY") ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << ENDSSH
             set -e
 
-            echo "🚀 Starting deployment..."
+            echo "🚀 Starting deployment for branch: $BRANCH..."
 
             # Navigate to application directory
             cd ${{ secrets.APP_PATH }}
 
-            # Pull latest changes
-            echo "📦 Pulling latest code..."
-            git pull origin main
+            # Fetch and Reset to remote state
+            echo "📦 Fetching latest changes..."
+            git fetch origin $BRANCH
+            git reset --hard origin/$BRANCH
 
-            # Run the robust deployment command
-            # This handles composer, migrate, seed (if needed), storage, build, cache, queue
+            # Run the comprehensive deploy command
             echo "⚙️  Running app:deploy..."
             php artisan app:deploy --force
 
             echo "✅ Deployment completed successfully!"
           ENDSSH
-
-      - name: Cleanup SSH Key
-        if: always()
-        run: rm -f ~/.ssh/deploy_key
 
       - name: Deployment Success Notification
         if: success()
