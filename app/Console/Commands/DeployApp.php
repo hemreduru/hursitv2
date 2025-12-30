@@ -62,6 +62,7 @@ class DeployApp extends Command
 
         // 5. Build Assets
         $this->info('5/7 Building frontend assets...');
+        $this->call('livewire:publish', ['--assets' => true]);
         $this->runShell('npm run build');
 
         // 6. Caching & Optimization
