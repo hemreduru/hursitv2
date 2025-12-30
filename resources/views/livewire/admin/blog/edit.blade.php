@@ -36,9 +36,8 @@
                     <textarea wire:model="form.short_description_tr" rows="3" class="w-full rounded-lg border-border-light dark:border-border-dark bg-white dark:bg-card-dark focus:ring-primary focus:border-primary transition-all"></textarea>
                      @error('form.short_description_tr') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                 </div>
-                 <div class="space-y-4 md:col-span-2">
-                    <label class="block text-sm font-medium">{{ __('messages.admin_content') }} (TR) <span class="text-red-500">*</span></label>
-                    <textarea wire:model="form.content_tr" rows="15" class="w-full font-mono text-sm rounded-lg border-border-light dark:border-border-dark bg-white dark:bg-card-dark focus:ring-primary focus:border-primary transition-all"></textarea>
+                <div class="space-y-4 md:col-span-2">
+                    <x-rich-text id="content_tr" label="{{ __('messages.admin_content') }} (TR)" wire:model="form.content_tr" />
                      @error('form.content_tr') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                 </div>
                 <div class="space-y-4 md:col-span-2">
@@ -69,9 +68,8 @@
                     <textarea wire:model="form.short_description_en" rows="3" class="w-full rounded-lg border-border-light dark:border-border-dark bg-white dark:bg-card-dark focus:ring-primary focus:border-primary transition-all"></textarea>
                      @error('form.short_description_en') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                 </div>
-                 <div class="space-y-4 md:col-span-2">
-                    <label class="block text-sm font-medium">{{ __('messages.admin_content') }} (EN) <span class="text-red-500">*</span></label>
-                    <textarea wire:model="form.content_en" rows="15" class="w-full font-mono text-sm rounded-lg border-border-light dark:border-border-dark bg-white dark:bg-card-dark focus:ring-primary focus:border-primary transition-all"></textarea>
+                <div class="space-y-4 md:col-span-2">
+                    <x-rich-text id="content_en" label="{{ __('messages.admin_content') }} (EN)" wire:model="form.content_en" />
                      @error('form.content_en') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                 </div>
                 <div class="space-y-4 md:col-span-2">

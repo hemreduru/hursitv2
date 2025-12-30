@@ -16,6 +16,7 @@ class Edit extends Component
             $project = Project::findOrFail($id);
             $this->form->setProject($project);
         }
+    }
     public function updated($name, $value)
     {
         if ($name === 'form.title_tr') {

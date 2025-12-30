@@ -1,7 +1,6 @@
 @import 'tailwindcss';
 @plugin '@tailwindcss/forms';
-@import 'tailwindcss';
-@plugin '@tailwindcss/forms';
+@plugin '@tailwindcss/typography';
 
 @source '../views';
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
@@ -121,4 +120,52 @@
 .select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
     background-color: var(--color-primary);
     color: white;
+}
+
+/* Quill Rich Text Editor */
+@import 'quill/dist/quill.snow.css';
+
+/* Dark Mode Overrides for Quill */
+.dark .ql-toolbar {
+    background-color: var(--color-card-dark);
+    border-color: var(--color-border-dark) !important;
+}
+
+.dark .ql-container {
+    border-color: var(--color-border-dark) !important;
+    background-color: var(--color-card-dark);
+    color: white;
+}
+
+.dark .ql-toolbar .ql-stroke {
+    stroke: #94a3b8 !important;
+}
+
+.dark .ql-toolbar .ql-fill {
+    fill: #94a3b8 !important;
+}
+
+.dark .ql-toolbar .ql-picker {
+    color: #94a3b8 !important;
+}
+
+/* Fix Editor Height / Rounded Corners */
+.ql-toolbar.ql-snow {
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+}
+.ql-container.ql-snow {
+    border-bottom-left-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+    font-family: inherit;
+    font-size: 1rem;
+}
+.ql-editor {
+    min-height: 200px;
+}
+
+/* Placeholder Color in Dark Mode */
+.dark .ql-editor.ql-blank::before {
+    color: #94a3b8 !important;
+    font-style: normal;
 }

@@ -141,4 +141,6 @@ return [
     'admin_no_projects' => 'Proje bulunamadı.',
     'error_create_project' => 'Proje oluşturulurken bir hata oluştu.',
     'error_update_project' => 'Proje güncellenirken bir hata oluştu.',
+
+    'type_something' => 'Bir şeyler yaz...'
 ];
