@@ -132,9 +132,14 @@
 
         <!-- Blog Section -->
         <section class="space-y-8" id="blog">
-            <div class="flex items-center gap-3">
-                <span class="material-symbols-outlined text-primary text-3xl">article</span>
-                <h2 class="text-2xl font-bold tracking-tight">{{ __('messages.latest_writings') }}</h2>
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-primary text-3xl">article</span>
+                    <h2 class="text-2xl font-bold tracking-tight">{{ __('messages.latest_writings') }}</h2>
+                </div>
+                <a class="text-sm font-bold text-primary hover:text-blue-400 flex items-center gap-1" href="{{ route('blog.index') }}">
+                    {{ __('messages.view_all') }} <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                </a>
             </div>
             <div class="space-y-4">
                 @forelse($latestPosts as $post)
