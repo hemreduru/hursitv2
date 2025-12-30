@@ -12,6 +12,14 @@ jobs:
     runs-on: ubuntu-latest
     environment: Testing
 
+    env:
+      DB_CONNECTION: mysql
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_DATABASE: test_db
+      DB_USERNAME: root
+      DB_PASSWORD: password
+
     services:
       mysql:
         image: mysql:8.0
@@ -63,36 +71,15 @@ jobs:
         run: |
           php artisan config:clear
           php artisan cache:clear
-        env:
-          DB_CONNECTION: mysql
-          DB_HOST: 127.0.0.1
-          DB_PORT: 3306
-          DB_DATABASE: test_db
-          DB_USERNAME: root
-          DB_PASSWORD: password
 
       - name: Run Database Migrations
         run: php artisan migrate --force
-        env:
-          DB_CONNECTION: mysql
-          DB_HOST: 127.0.0.1
-          DB_PORT: 3306
-          DB_DATABASE: test_db
-          DB_USERNAME: root
-          DB_PASSWORD: password
 
       - name: Build Assets
         run: npm run build
 
       - name: Run Laravel Tests
         run: ./vendor/bin/pest
-        env:
-          DB_CONNECTION: mysql
-          DB_HOST: 127.0.0.1
-          DB_PORT: 3306
-          DB_DATABASE: test_db
-          DB_USERNAME: root
-          DB_PASSWORD: password
 
       - name: Test Success Notification
         if: success()
@@ -122,7 +109,7 @@ jobs:
 
       - name: Deploy to Production Server
         run: |
-          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'ENDSSH'
+          ssh -i ~/.ssh/deploy_key ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'ENDSSH'
             set -e
             
             echo "🚀 Starting deployment..."
@@ -130,9 +117,12 @@ jobs:
             # Navigate to application directory
             cd ${{ secrets.APP_PATH }}
             
+            # Get the current branch name
+            BRANCH="${{ github.ref_name }}"
+            
             # Pull latest changes
-            echo "📦 Pulling latest code from Git..."
-            git pull origin main
+            echo "📦 Pulling latest code from Git (branch: $BRANCH)..."
+            git pull origin $BRANCH
             
             # Install/update composer dependencies
             echo "📚 Installing Composer dependencies..."
