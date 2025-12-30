@@ -19,6 +19,18 @@ class Show extends Component
         $post = $postService->getBySlug($this->slug, app()->getLocale());
 
         if (!$post) {
+            // Smart 404 Recovery: Check if slug belongs to another locale
+            $alternativePost = $postService->findAny($this->slug);
+
+            if ($alternativePost) {
+                $currentLocale = app()->getLocale();
+                $targetSlug = $alternativePost->{"slug_{$currentLocale}"};
+
+                if ($targetSlug && $targetSlug !== $this->slug) {
+                    return redirect()->route('blog.show', $targetSlug);
+                }
+            }
+
             abort(404);
         }
 

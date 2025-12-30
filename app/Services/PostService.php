@@ -59,6 +59,11 @@ class PostService
         return $this->postRepository->findBySlug($slug, $locale);
     }
 
+    public function findAny(string $slug): ?Model
+    {
+        return $this->postRepository->findByAnyLocalizedSlug($slug);
+    }
+
     public function getAllForAdmin($perPage = 20, array $filters = [])
     {
         $query = $this->postRepository->getModel()::query();

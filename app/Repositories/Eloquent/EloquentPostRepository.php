@@ -28,6 +28,17 @@ class EloquentPostRepository extends BaseRepository implements PostRepositoryInt
             ->first();
     }
 
+    public function findByAnyLocalizedSlug(string $slug)
+    {
+        return $this->model
+            ->where('status', 'published')
+            ->where(function ($q) use ($slug) {
+                $q->where('slug_en', $slug)
+                  ->orWhere('slug_tr', $slug);
+            })
+            ->first();
+    }
+
     public function getByLocale(string $locale): Collection
     {
         return $this->getPublished($locale);
