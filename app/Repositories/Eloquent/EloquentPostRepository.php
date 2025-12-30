@@ -27,4 +27,9 @@ class EloquentPostRepository extends BaseRepository implements PostRepositoryInt
             ->where('status', 'published')
             ->first();
     }
+
+    public function getByLocale(string $locale): Collection
+    {
+        return $this->getPublished($locale);
+    }
 }

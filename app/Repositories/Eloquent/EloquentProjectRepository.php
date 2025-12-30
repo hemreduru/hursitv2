@@ -25,4 +25,9 @@ class EloquentProjectRepository extends BaseRepository implements ProjectReposit
         return $this->model->where("slug_{$locale}", $slug)
             ->first();
     }
+
+    public function getByLocale(string $locale): Collection
+    {
+        return $this->model->all();
+    }
 }

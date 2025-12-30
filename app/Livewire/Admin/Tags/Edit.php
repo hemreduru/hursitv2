@@ -26,7 +26,7 @@ class Edit extends Component
     {
         $this->validate([
             'name' => 'required|string|max:255',
-            'slug' => 'required|string|max:255|unique:tags,slug,' . ($this->tag->id ?? 'NULL'),
+            'slug' => ['required', 'string', 'max:255', \Illuminate\Validation\Rule::unique('tags')->ignore($this->tag?->id)],
             'locale' => 'required|in:en,tr',
         ]);
 
