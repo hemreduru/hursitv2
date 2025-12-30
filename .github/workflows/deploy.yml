@@ -126,9 +126,32 @@ jobs:
             git fetch origin
             git reset --hard origin/$BRANCH
 
-            # Run the existing production deployment command
-            echo "⚙️  Running app:deploy..."
-            php artisan app:deploy --force
+            # Application Deployment Steps
+            echo "📚 Installing Composer dependencies..."
+            composer install --no-dev --optimize-autoloader --no-interaction
+
+            echo "🗄️  Running database migrations..."
+            php artisan migrate --force
+
+            echo "🔗 Linking storage..."
+            php artisan storage:link
+
+            echo "📦 Installing Frontend dependencies..."
+            npm install
+
+            echo "🎨 Publishing Livewire assets..."
+            php artisan livewire:publish --assets
+
+            echo "🏗️  Building Frontend..."
+            npm run build
+
+            echo "🔄 Optimizing Laravel caches..."
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
+
+            echo "🚀 Restarting Queue..."
+            php artisan queue:restart
 
             echo "✅ Deployment completed successfully!"
           ENDSSH
