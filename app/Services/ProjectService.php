@@ -36,9 +36,12 @@ class ProjectService
 
         if (!empty($filters['search'])) {
             $query->where(function ($q) use ($filters) {
-                $q->where('title', 'like', '%' . $filters['search'] . '%')
-                  ->orWhere('short_description', 'like', '%' . $filters['search'] . '%')
-                  ->orWhere('content', 'like', '%' . $filters['search'] . '%')
+                $q->where('title_tr', 'like', '%' . $filters['search'] . '%')
+                  ->orWhere('title_en', 'like', '%' . $filters['search'] . '%')
+                  ->orWhere('short_description_tr', 'like', '%' . $filters['search'] . '%')
+                  ->orWhere('short_description_en', 'like', '%' . $filters['search'] . '%')
+                  ->orWhere('content_tr', 'like', '%' . $filters['search'] . '%')
+                  ->orWhere('content_en', 'like', '%' . $filters['search'] . '%')
                   ->orWhere('tech_stack', 'like', '%' . $filters['search'] . '%');
             });
         }
