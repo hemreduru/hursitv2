@@ -125,6 +125,8 @@ jobs:
             git pull origin $BRANCH
             
             # Install/update composer dependencies
+            # Note: Flux UI credentials should be pre-configured on production server
+            # via composer config or auth.json file
             echo "📚 Installing Composer dependencies..."
             composer install --no-dev --optimize-autoloader --no-interaction
             
@@ -139,6 +141,8 @@ jobs:
             php artisan view:cache
             
             # Set proper permissions
+            # Laravel requires write permissions for web server and CLI user
+            # 775 allows both owner and group to write, which is needed for storage
             echo "🔐 Setting file permissions..."
             chmod -R 775 storage bootstrap/cache
             
