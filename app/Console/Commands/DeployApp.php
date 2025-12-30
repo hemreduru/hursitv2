@@ -35,7 +35,7 @@ class DeployApp extends Command
 
         // 1. Dependency Optimization
         $this->info('1/7 Optimizing dependencies...');
-        $this->runShell('composer install --no-dev --optimize-autoloader');
+        $this->runShell(['composer', 'install', '--no-dev', '--optimize-autoloader']);
 
         // 2. Database Migration
         $this->info('2/7 Migrating database...');
@@ -62,8 +62,19 @@ class DeployApp extends Command
 
         // 5. Build Assets
         $this->info('5/7 Building frontend assets...');
+        $this->info('    Running npm install...');
+        $this->runShell(['npm', 'install']);
+
         $this->call('livewire:publish', ['--assets' => true]);
-        $this->runShell('npm run build');
+
+        if (!$this->runShell(['npm', 'run', 'build'])) {
+            $this->error('FE Build Failed! Checking for manifest...');
+            if (!File::exists(public_path('build/manifest.json'))) {
+                 $this->error('CRITICAL ERROR: public/build/manifest.json not found.');
+                 $this->error('Please run "npm run build" manually to debug.');
+                 return 1;
+            }
+        }
 
         // 6. Caching & Optimization
         $this->info('6/7 Caching configuration and routes...');
@@ -83,11 +94,19 @@ class DeployApp extends Command
         return 0;
     }
 
-    private function runShell($command)
+    private function runShell(array $command)
     {
-        $this->line("   > $command");
-        $output = shell_exec($command);
-        $this->line($output);
+        $this->line("   > " . implode(' ', $command));
+
+        $process = new \Symfony\Component\Process\Process($command);
+        $process->setTimeout(300);
+        $process->setWorkingDirectory(base_path());
+
+        $process->run(function ($type, $buffer) {
+            $this->output->write($buffer);
+        });
+
+        return $process->isSuccessful();
     }
 
     private function setupWizard()
