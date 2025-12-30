@@ -44,6 +44,9 @@ return [
     'view_source' => 'Kaynak Kodu',
     'live_demo' => 'Canlı Demo',
     'tech_stack' => 'Teknoloji Yığını',
+    'filter_by_tag' => 'Etikete Göre Filtrele',
+    'read_more' => 'Devamını Oku',
+    'no_tags' => 'Etiket bulunamadı.',
     'search_placeholder' => 'Anahtar kelime ile ara...',
 
     // Admin

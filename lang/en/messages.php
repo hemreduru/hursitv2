@@ -44,6 +44,9 @@ return [
     'view_source' => 'View Source',
     'live_demo' => 'Live Demo',
     'tech_stack' => 'Tech Stack',
+    'filter_by_tag' => 'Filter by Tag',
+    'read_more' => 'Read More',
+    'no_tags' => 'No tags found.',
     'search_placeholder' => 'Search posts by keyword...',
 
     // Admin

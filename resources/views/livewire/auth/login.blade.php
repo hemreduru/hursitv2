@@ -42,12 +42,27 @@
             <!-- Remember Me -->
             <flux:checkbox name="remember" :label="__('Remember me')" :checked="old('remember')" />
 
+            <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response">
+
             <div class="flex items-center justify-end">
                 <button type="submit" class="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-bold text-white bg-primary hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed" data-test="login-button">
                     {{ __('Log in') }}
                 </button>
             </div>
         </form>
+        @if(config('services.recaptcha.site_key'))
+            <script>
+                document.querySelector('form').addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    grecaptcha.ready(function() {
+                        grecaptcha.execute('{{ config('services.recaptcha.site_key') }}', {action: 'login'}).then(function(token) {
+                            document.getElementById('g-recaptcha-response').value = token;
+                            e.target.submit();
+                        });
+                    });
+                });
+            </script>
+        @endif
 
         @if (Route::has('register'))
             <div class="space-x-1 text-sm text-center rtl:space-x-reverse text-zinc-600 dark:text-zinc-400">
