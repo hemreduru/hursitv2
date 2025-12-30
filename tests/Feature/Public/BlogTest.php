@@ -1,6 +1,9 @@
 <?php
 
 use App\Models\Post;
+use App\Models\Tag;
+use Livewire\Livewire;
+use App\Livewire\Public\Blog\Index;
 
 test('public blog index shows published posts', function () {
     $publishedPost = Post::factory()->create([
@@ -18,6 +21,29 @@ test('public blog index shows published posts', function () {
     $this->get(route('blog.index'))
         ->assertStatus(200)
         ->assertSee('Published Post EN');
+});
+
+test('public blog can be filtered by tag', function () {
+    $tag = Tag::factory()->create(['name' => 'Laravel', 'slug' => 'laravel']);
+    $post = Post::factory()->create(['title_en' => 'Laravel Post', 'status' => 'published']);
+    $post->tags()->attach($tag);
+
+    $otherPost = Post::factory()->create(['title_en' => 'Other Post', 'status' => 'published']);
+
+    Livewire::test(Index::class)
+        ->set('tag', 'Laravel')
+        ->assertSee('Laravel Post')
+        ->assertDontSee('Other Post');
+});
+
+test('public blog can be filtered by search', function () {
+    Post::factory()->create(['title_en' => 'SearchMe', 'status' => 'published']);
+    Post::factory()->create(['title_en' => 'IgnoreMe', 'status' => 'published']);
+
+    Livewire::test(Index::class)
+        ->set('search', 'SearchMe')
+        ->assertSee('SearchMe')
+        ->assertDontSee('IgnoreMe');
 });
 
 test('public blog detail page shows content', function () {

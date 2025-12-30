@@ -79,4 +79,27 @@ class PostService
 
         return $query->latest()->paginate($perPage);
     }
+    public function getPublishedWithFilters(string $locale, int $perPage = 15, array $filters = [])
+    {
+        $query = $this->postRepository->getModel()::query()
+            ->where('status', 'published');
+
+        if (!empty($filters['search'])) {
+            $term = $filters['search'];
+            $query->where(function ($q) use ($term) {
+                $q->where('title_en', 'like', '%' . $term . '%')
+                  ->orWhere('title_tr', 'like', '%' . $term . '%')
+                  ->orWhere('content_en', 'like', '%' . $term . '%')
+                  ->orWhere('content_tr', 'like', '%' . $term . '%');
+            });
+        }
+
+        if (!empty($filters['tag'])) {
+            $query->whereHas('tags', function ($q) use ($filters) {
+                $q->where('name', $filters['tag']);
+            });
+        }
+
+        return $query->orderBy('published_at', 'desc')->paginate($perPage);
+    }
 }
