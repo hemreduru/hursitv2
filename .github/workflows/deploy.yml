@@ -41,10 +41,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup PHP 8.2
+      - name: Setup PHP 8.4
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
+          php-version: '8.4'
           extensions: mbstring, dom, fileinfo, mysql, gd, zip
           tools: composer:v2
           coverage: none
@@ -114,45 +114,21 @@ jobs:
         run: |
           ssh -i ~/.ssh/deploy_key ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'ENDSSH'
             set -e
-            
+
             echo "🚀 Starting deployment..."
-            
+
             # Navigate to application directory
             cd ${{ secrets.APP_PATH }}
-            
-            # Get the current branch name
-            BRANCH="${{ github.ref_name }}"
-            
+
             # Pull latest changes
-            echo "📦 Pulling latest code from Git (branch: $BRANCH)..."
-            git pull origin $BRANCH
-            
-            # Install/update composer dependencies
-            # Note: Flux UI credentials should be pre-configured on production server
-            # via composer config or auth.json file
-            echo "📚 Installing Composer dependencies..."
-            composer install --no-dev --optimize-autoloader --no-interaction
-            
-            # Run database migrations
-            echo "🗄️  Running database migrations..."
-            php artisan migrate --force
-            
-            # Clear and optimize caches
-            echo "🔄 Optimizing Laravel caches..."
-            php artisan config:cache
-            php artisan route:cache
-            php artisan view:cache
-            
-            # Set proper permissions
-            # Laravel requires write permissions for web server and CLI user
-            # 775 allows both owner and group to write, which is needed for storage
-            echo "🔐 Setting file permissions..."
-            chmod -R 775 storage bootstrap/cache
-            
-            # Restart services if needed (uncomment if you use queue workers or other services)
-            # php artisan queue:restart
-            # php artisan octane:reload
-            
+            echo "📦 Pulling latest code..."
+            git pull origin main
+
+            # Run the robust deployment command
+            # This handles composer, migrate, seed (if needed), storage, build, cache, queue
+            echo "⚙️  Running app:deploy..."
+            php artisan app:deploy --force
+
             echo "✅ Deployment completed successfully!"
           ENDSSH
 
