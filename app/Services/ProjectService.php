@@ -30,6 +30,11 @@ class ProjectService
         return $this->projectRepository->findBySlug($slug, $locale);
     }
 
+    public function findAny(string $slug): ?Model
+    {
+        return $this->projectRepository->findByAnyLocalizedSlug($slug);
+    }
+
     public function paginate(int $perPage = 15, array $filters = [])
     {
         $query = $this->projectRepository->getModel()::query();

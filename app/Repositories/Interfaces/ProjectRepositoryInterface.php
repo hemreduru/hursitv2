@@ -8,4 +8,7 @@ interface ProjectRepositoryInterface extends RepositoryInterface
 {
     public function getFeatured(string $locale): Collection;
     public function findBySlug(string $slug, string $locale);
+
+    public function findByAnyLocalizedSlug(string $slug);
+
 }

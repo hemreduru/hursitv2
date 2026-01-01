@@ -9,18 +9,34 @@ class Show extends Component
 {
     public string $slug;
 
-    public function mount($slug)
+    public function mount($slug, ProjectService $projectService)
     {
         $this->slug = $slug;
+
+        // Check availability in mount to handle redirects
+        $project = $projectService->getBySlug($this->slug, app()->getLocale());
+
+        if (!$project) {
+            // Smart 404 Recovery: Check if slug belongs to another locale
+            $alternativeProject = $projectService->findAny($this->slug);
+
+            if ($alternativeProject) {
+                $currentLocale = app()->getLocale();
+                $targetSlug = $alternativeProject->{"slug_{$currentLocale}"};
+
+                if ($targetSlug && $targetSlug !== $this->slug) {
+                    $this->redirect(route('projects.show', $targetSlug), navigate: true);
+                    return;
+                }
+            }
+
+            abort(404);
+        }
     }
 
     public function render(ProjectService $projectService)
     {
         $project = $projectService->getBySlug($this->slug, app()->getLocale());
-
-        if (!$project) {
-            abort(404);
-        }
 
         return view('livewire.public.projects.show', [
             'project' => $project
