@@ -119,6 +119,9 @@ jobs:
               exit 1
             fi
 
+            echo "🔒 Adding safe directory for git..."
+            git config --global --add safe.directory "${APP_PATH}"
+
             echo "🌿 Current branch:"
             git rev-parse --abbrev-ref HEAD
 
