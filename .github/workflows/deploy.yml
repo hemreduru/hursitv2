@@ -38,59 +38,39 @@ jobs:
           --health-retries=3
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup PHP 8.4
+      - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
           extensions: mbstring, dom, fileinfo, mysql, gd, zip
           tools: composer:v2
-          coverage: none
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: 'npm'
 
-      - name: Install Node Dependencies
-        run: npm install
+      - run: npm install
 
-      - name: Add Flux Credentials
-        run: composer config http-basic.composer.fluxui.dev "${{ secrets.FLUX_USERNAME }}" "${{ secrets.FLUX_LICENSE_KEY }}"
+      - run: composer config http-basic.composer.fluxui.dev "${{ secrets.FLUX_USERNAME }}" "${{ secrets.FLUX_LICENSE_KEY }}"
 
-      - name: Install Composer Dependencies
-        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+      - run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
-      - name: Copy Environment File
-        run: cp .env.example .env
+      - run: cp .env.example .env
 
-      - name: Generate Application Key
-        run: php artisan key:generate
+      - run: php artisan key:generate
 
-      - name: Run Database Migrations
-        run: php artisan migrate --force
+      - run: php artisan migrate --force
 
-      - name: Configure Database
-        run: |
+      - run: |
           php artisan config:clear
           php artisan cache:clear
 
-      - name: Build Assets
-        run: npm run build
+      - run: npm run build
 
-      - name: Run Laravel Tests
-        run: ./vendor/bin/pest
-
-      - name: Test Success Notification
-        if: success()
-        run: echo "✅ Tests passed successfully!"
-
-      - name: Test Failure Notification
-        if: failure()
-        run: echo "❌ Tests failed! Deployment will not proceed."
+      - run: ./vendor/bin/pest
 
   deploy:
     name: Deploy to Production
@@ -100,8 +80,7 @@ jobs:
     environment: Production
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Setup SSH Agent
         uses: webfactory/ssh-agent@v0.9.0
@@ -110,58 +89,67 @@ jobs:
 
       - name: Deploy to Production Server
         run: |
-          # Dynamically determine branch
           BRANCH=${GITHUB_REF#refs/heads/}
 
+          echo "Deploying branch: $BRANCH"
+
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << ENDSSH
-            set -e
+            set -euo pipefail
 
-            echo "🚀 Starting deployment for branch: $BRANCH..."
+            echo "👤 User: \$(whoami)"
+            echo "📂 Current dir: \$(pwd)"
+            echo "📌 APP_PATH: ${{ secrets.APP_PATH }}"
 
-            # Navigate to application directory
-            cd ${{ secrets.APP_PATH }}
+            if [ ! -d "${{ secrets.APP_PATH }}" ]; then
+              echo "❌ APP_PATH does not exist"
+              exit 1
+            fi
 
-            # Synchronize code safely
-            echo "📦 Fetching latest changes..."
+            cd "${{ secrets.APP_PATH }}"
+
+            if [ ! -d ".git" ]; then
+              echo "❌ Not a git repository"
+              exit 1
+            fi
+
+            echo "🌿 Current branch:"
+            git rev-parse --abbrev-ref HEAD
+
+            echo "📦 Fetching latest code..."
             git fetch origin
+
+            echo "🔄 Resetting to origin/$BRANCH"
             git reset --hard origin/$BRANCH
 
-            # Application Deployment Steps
-            echo "📚 Installing Composer dependencies..."
+            echo "🧾 Latest commit:"
+            git log -1 --oneline
+
+            echo "📚 Composer install"
             composer install --no-dev --optimize-autoloader --no-interaction
 
-            echo "🗄️  Running database migrations..."
+            echo "🗄️ Migrations"
             php artisan migrate --force
 
-            echo "🔗 Linking storage..."
-            php artisan storage:link
+            echo "🔗 Storage link"
+            php artisan storage:link || true
 
-            echo "📦 Installing Frontend dependencies..."
+            echo "📦 NPM install"
             npm install
 
-            echo "🎨 Publishing Livewire assets..."
-            php artisan livewire:publish --assets
+            echo "🎨 Livewire assets"
+            php artisan livewire:publish --assets || true
 
-            echo "🏗️  Building Frontend..."
+            echo "🏗️ Build frontend"
             npm run build
 
-            echo "🔄 Optimizing Laravel caches..."
+            echo "⚡ Cache optimize"
+            php artisan config:clear
             php artisan config:cache
             php artisan route:cache
             php artisan view:cache
 
-            echo "🚀 Restarting Queue..."
+            echo "🔄 Queue restart"
             php artisan queue:restart
 
-            echo "✅ Deployment completed successfully!"
+            echo "✅ DEPLOY SUCCESS"
           ENDSSH
-
-      - name: Deployment Success Notification
-        if: success()
-        run: echo "✅ Deployment to production completed successfully!"
-
-      - name: Deployment Failure Notification
-        if: failure()
-        run: |
-          echo "❌ Deployment failed! Please check the logs and server status."
-          exit 1
