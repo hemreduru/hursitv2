@@ -88,24 +88,31 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_KEY }}
 
       - name: Deploy to Production Server
+        env:
+          APP_PATH: ${{ secrets.APP_PATH }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
         run: |
           BRANCH=${GITHUB_REF#refs/heads/}
+          echo "🚀 Deploying branch: $BRANCH to ${SSH_HOST}"
 
-          echo "Deploying branch: $BRANCH"
-
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << ENDSSH
+          ssh -o StrictHostKeyChecking=no ${SSH_USER}@${SSH_HOST} \
+            APP_PATH="${APP_PATH}" \
+            BRANCH="${BRANCH}" \
+            bash << 'ENDSSH'
             set -euo pipefail
 
-            echo "👤 User: \$(whoami)"
-            echo "📂 Current dir: \$(pwd)"
-            echo "📌 APP_PATH: ${{ secrets.APP_PATH }}"
+            echo "👤 User: $(whoami)"
+            echo "📂 Current dir: $(pwd)"
+            echo "📌 APP_PATH: ${APP_PATH}"
+            echo "🌿 Target branch: ${BRANCH}"
 
-            if [ ! -d "${{ secrets.APP_PATH }}" ]; then
-              echo "❌ APP_PATH does not exist"
+            if [ ! -d "${APP_PATH}" ]; then
+              echo "❌ APP_PATH does not exist: ${APP_PATH}"
               exit 1
             fi
 
-            cd "${{ secrets.APP_PATH }}"
+            cd "${APP_PATH}"
 
             if [ ! -d ".git" ]; then
               echo "❌ Not a git repository"
@@ -118,8 +125,14 @@ jobs:
             echo "📦 Fetching latest code..."
             git fetch origin
 
-            echo "🔄 Resetting to origin/$BRANCH"
-            git reset --hard origin/$BRANCH
+            echo "🔄 Pulling latest changes from ${BRANCH}..."
+            if git pull origin ${BRANCH}; then
+              echo "✅ Git pull successful"
+            else
+              echo "⚠️ Pull failed, trying hard reset..."
+              git reset --hard origin/${BRANCH}
+              echo "✅ Hard reset successful"
+            fi
 
             echo "🧾 Latest commit:"
             git log -1 --oneline
