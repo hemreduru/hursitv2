@@ -1,8 +1,7 @@
-name: CI/CD - Laravel Simple Deploy
+name: Run Tests
 
 on:
   push:
-    branches: [ main, master ]
 
 permissions:
   contents: read
@@ -61,35 +60,3 @@ jobs:
       - run: npm run build
 
       - run: ./vendor/bin/pest
-
-  deploy:
-    name: Deploy to Production
-    needs: test
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push'
-
-    steps:
-      - name: Deploy via SSH (server handles git pull)
-        run: |
-          ssh -o StrictHostKeyChecking=no hursitv2@${{ secrets.SSH_HOST }} << 'EOF'
-            set -e
-
-            cd /home/hursitv2/htdocs/www.hursit.me
-
-            echo "📦 Pulling latest code"
-            git pull
-
-            echo "📚 Composer install"
-            composer install --no-dev --no-scripts --optimize-autoloader
-
-            echo "🗄️ Migrate"
-            php artisan migrate --force
-
-            echo "⚡ Optimize"
-            php artisan optimize
-
-            echo "🔄 Queue restart"
-            php artisan queue:restart
-
-            echo "✅ DEPLOY FINISHED"
-          EOF
