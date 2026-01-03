@@ -1,9 +1,7 @@
-name: CI/CD Pipeline - Laravel Production Deployment
+name: CI/CD - Laravel Simple Deploy
 
 on:
   push:
-    branches: [ main, master ]
-  pull_request:
     branches: [ main, master ]
 
 permissions:
@@ -13,15 +11,6 @@ jobs:
   test:
     name: Run Tests
     runs-on: ubuntu-latest
-    environment: Testing
-
-    env:
-      DB_CONNECTION: mysql
-      DB_HOST: 127.0.0.1
-      DB_PORT: 3306
-      DB_DATABASE: test_db
-      DB_USERNAME: root
-      DB_PASSWORD: password
 
     services:
       mysql:
@@ -37,6 +26,14 @@ jobs:
           --health-timeout=5s
           --health-retries=3
 
+    env:
+      DB_CONNECTION: mysql
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_DATABASE: test_db
+      DB_USERNAME: root
+      DB_PASSWORD: password
+
     steps:
       - uses: actions/checkout@v4
 
@@ -44,29 +41,22 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
-          extensions: mbstring, dom, fileinfo, mysql, gd, zip
           tools: composer:v2
+          extensions: mbstring, dom, fileinfo, mysql, gd, zip
 
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: 'npm'
 
       - run: npm install
 
-      - run: composer config http-basic.composer.fluxui.dev "${{ secrets.FLUX_USERNAME }}" "${{ secrets.FLUX_LICENSE_KEY }}"
-
-      - run: composer install --prefer-dist --no-interaction
+      - run: composer install --no-interaction
 
       - run: cp .env.example .env
 
       - run: php artisan key:generate
 
       - run: php artisan migrate --force
-
-      - run: |
-          php artisan config:clear
-          php artisan cache:clear
 
       - run: npm run build
 
@@ -76,65 +66,30 @@ jobs:
     name: Deploy to Production
     needs: test
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
-    environment: Production
+    if: github.event_name == 'push'
 
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup SSH Agent
-        uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_KEY }}
-
-      - name: Deploy to Production Server
+      - name: Deploy via SSH (server handles git pull)
         run: |
-          BRANCH=${GITHUB_REF#refs/heads/}
+          ssh -o StrictHostKeyChecking=no hursitv2@${{ secrets.SSH_HOST }} << 'EOF'
+            set -e
 
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'ENDSSH'
-            set -euo pipefail
+            cd /home/hursitv2/htdocs/www.hursit.me
 
-            cd "${{ secrets.APP_PATH }}"
+            echo "📦 Pulling latest code"
+            git pull
 
-            echo "🌿 Current branch:"
-            git rev-parse --abbrev-ref HEAD
+            echo "📚 Composer install"
+            composer install --no-dev --no-scripts --optimize-autoloader
 
-            echo "📦 Fetching latest code..."
-            git fetch origin
-
-            echo "🔄 Resetting to origin/$BRANCH"
-            git reset --hard origin/$BRANCH
-
-            echo "🧾 Latest commit:"
-            git log -1 --oneline
-
-            echo "📚 Composer install (production-safe)"
-            composer install --no-dev --no-scripts --optimize-autoloader --no-interaction \
-              || (
-                echo "⚠️ Retrying with clean vendor..." \
-                && rm -rf vendor \
-                && composer install --no-dev --no-scripts --optimize-autoloader --no-interaction
-              )
-
-            echo "🗄️ Migrations"
+            echo "🗄️ Migrate"
             php artisan migrate --force
 
-            echo "🔗 Storage link"
-            php artisan storage:link || true
-
-            echo "📦 NPM install"
-            npm install
-
-            echo "🏗️ Build frontend"
-            npm run build
-
-            echo "⚡ Cache optimize"
+            echo "⚡ Optimize"
             php artisan optimize
-            php artisan route:cache
-            php artisan view:cache
 
             echo "🔄 Queue restart"
             php artisan queue:restart
 
-            echo "✅ DEPLOY SUCCESS"
-          ENDSSH
+            echo "✅ DEPLOY FINISHED"
+          EOF
