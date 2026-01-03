@@ -9,4 +9,5 @@ Route::get('/user', function (Request $request) {
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/posts', [\App\Http\Controllers\Api\PostController::class, 'store']);
+    Route::post('/upload', [\App\Http\Controllers\Api\UploadController::class, 'store']);
 });

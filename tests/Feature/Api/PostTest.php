@@ -21,6 +21,7 @@ test('authenticated user can create a post', function () {
         'content_en' => '<p>Content EN</p>',
         'content_tr' => '<p>Content TR</p>',
         'status' => 'draft',
+        'thumbnail' => 'https://hursit.me/storage/uploads/test.jpg',
     ];
 
     $response = postJson('/api/posts', $data)
@@ -36,6 +37,7 @@ test('authenticated user can create a post', function () {
         'title_en' => 'Test Post EN',
         'slug_en' => 'test-post-en', // Auto generated
         'slug_tr' => 'test-post-tr', // Auto generated
+        'thumbnail' => 'https://hursit.me/storage/uploads/test.jpg',
     ]);
 });
 

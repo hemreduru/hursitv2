@@ -44,6 +44,7 @@ class StorePostRequest extends FormRequest
             'status' => 'nullable|in:draft,published',
             'slug_en' => 'required|string|max:255|unique:posts,slug_en',
             'slug_tr' => 'required|string|max:255|unique:posts,slug_tr',
+            'thumbnail' => 'nullable|string|max:255',
             'tags' => 'nullable|array',
             'tags.*' => 'integer|exists:tags,id',
         ];

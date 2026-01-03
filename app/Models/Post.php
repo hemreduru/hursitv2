@@ -18,6 +18,7 @@ class Post extends Model
         'status',
         'published_at',
         'reading_time',
+        'thumbnail',
     ];
 
     protected $casts = [
