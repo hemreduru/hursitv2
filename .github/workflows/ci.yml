@@ -55,6 +55,9 @@ jobs:
 
       - run: php artisan key:generate
 
+      - name: Generate APP_KEY for testing
+        run: php artisan key:generate --env=testing
+
       - run: php artisan migrate --force
 
       - run: npm run build
