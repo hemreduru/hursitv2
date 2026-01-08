@@ -32,9 +32,7 @@ class PostService
 
         $post = $this->postRepository->create($data);
 
-        if (!empty($tags)) {
-            $post->tags()->sync($tags);
-        }
+        $this->syncTags($post, $tags);
 
         return $post;
     }
@@ -48,7 +46,7 @@ class PostService
 
         if ($updated && !empty($tags)) {
             $post = $this->postRepository->find($id);
-            $post->tags()->sync($tags);
+            $this->syncTags($post, $tags);
         }
 
         return $updated;
@@ -106,5 +104,30 @@ class PostService
         }
 
         return $query->orderBy('published_at', 'desc')->paginate($perPage);
+    }
+
+    protected function syncTags(Model $post, array $tags)
+    {
+        if (empty($tags)) {
+            return;
+        }
+
+        $tagIds = [];
+        foreach ($tags as $tag) {
+            if (is_numeric($tag)) {
+                $tagIds[] = $tag;
+            } else {
+                $tagModel = \App\Models\Tag::firstOrCreate(
+                    ['name' => $tag],
+                    [
+                        'slug' => \Illuminate\Support\Str::slug($tag),
+                        'locale' => app()->getLocale(),
+                    ]
+                );
+                $tagIds[] = $tagModel->id;
+            }
+        }
+
+        $post->tags()->sync($tagIds);
     }
 }
