@@ -38,13 +38,17 @@ echo "Building and starting Docker containers..."
 docker-compose up -d --build
 
 echo ""
-echo "Waiting for containers to be ready..."
-sleep 5
+echo "Waiting for MySQL to be ready..."
+echo "This may take up to 30 seconds..."
+sleep 10
 
-echo ""
-echo "Creating SQLite database file..."
-docker-compose exec -T app touch /var/www/html/database/database.sqlite
-docker-compose exec -T app chown www-data:www-data /var/www/html/database/database.sqlite
+# Wait for MySQL to be ready
+until docker-compose exec -T mysql mysqladmin ping -h localhost --silent; do
+    echo "Waiting for MySQL..."
+    sleep 2
+done
+
+echo "✓ MySQL is ready!"
 
 echo ""
 echo "Generating application key..."
@@ -61,9 +65,18 @@ echo "==================================="
 echo ""
 echo "Your application is now running at: http://localhost"
 echo ""
+echo "Database Information:"
+echo "  - Host: mysql (from app container) or localhost (from host)"
+echo "  - Port: 3306"
+echo "  - Database: hursitv2"
+echo "  - Username: hursitv2_user"
+echo "  - Password: hursitv2_password"
+echo ""
 echo "Useful commands:"
-echo "  - View logs: docker-compose logs -f app"
+echo "  - View app logs: docker-compose logs -f app"
+echo "  - View MySQL logs: docker-compose logs -f mysql"
 echo "  - Stop containers: docker-compose down"
-echo "  - Access container: docker-compose exec app bash"
+echo "  - Access app container: docker-compose exec app bash"
+echo "  - Access MySQL: docker-compose exec mysql mysql -u hursitv2_user -p hursitv2"
 echo "  - Run artisan: docker-compose exec app php artisan <command>"
 echo ""

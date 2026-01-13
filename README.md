@@ -7,7 +7,7 @@ Laravel project with comprehensive testing suite.
 
 ## Docker Setup (LAMP Stack)
 
-This project includes Docker support with LAMP stack (Linux, Apache, MySQL/SQLite, PHP).
+This project includes Docker support with LAMP stack (Linux, Apache, MySQL, PHP).
 
 ### Quick Start with Docker
 
@@ -43,11 +43,7 @@ cp .env.example .env
 docker-compose up -d --build
 ```
 
-4. Create SQLite database file:
-```bash
-docker-compose exec app touch /var/www/html/database/database.sqlite
-docker-compose exec app chown www-data:www-data /var/www/html/database/database.sqlite
-```
+4. Wait for MySQL to be ready (about 10-30 seconds)
 
 5. Generate application key:
 ```bash
@@ -64,8 +60,10 @@ docker-compose exec app php artisan migrate --force
 ### Docker Commands
 
 - **Stop containers**: `docker-compose down`
-- **View logs**: `docker-compose logs -f app`
-- **Access container**: `docker-compose exec app bash`
+- **View app logs**: `docker-compose logs -f app`
+- **View MySQL logs**: `docker-compose logs -f mysql`
+- **Access app container**: `docker-compose exec app bash`
+- **Access MySQL**: `docker-compose exec mysql mysql -u hursitv2_user -p hursitv2`
 - **Run artisan commands**: `docker-compose exec app php artisan <command>`
 
 For more detailed Docker documentation, see [docker/README.md](docker/README.md).

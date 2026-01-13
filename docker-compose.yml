@@ -11,16 +11,40 @@ services:
       - "80:80"
     volumes:
       - ./storage:/var/www/html/storage
-      - ./database:/var/www/html/database
       - ./.env:/var/www/html/.env
     environment:
       - APP_ENV=production
       - APP_DEBUG=false
-      - DB_CONNECTION=sqlite
-      - DB_DATABASE=/var/www/html/database/database.sqlite
+      - DB_CONNECTION=mysql
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_DATABASE=hursitv2
+      - DB_USERNAME=hursitv2_user
+      - DB_PASSWORD=hursitv2_password
+    depends_on:
+      - mysql
     networks:
       - hursitv2-network
+
+  mysql:
+    image: mysql:8.0
+    container_name: hursitv2-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: hursitv2
+      MYSQL_USER: hursitv2_user
+      MYSQL_PASSWORD: hursitv2_password
+      MYSQL_ROOT_PASSWORD: root_password
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - hursitv2-network
+    command: --default-authentication-plugin=mysql_native_password
 
 networks:
   hursitv2-network:
     driver: bridge
+
+volumes:
+  mysql_data:
+    driver: local
