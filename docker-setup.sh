@@ -42,6 +42,11 @@ echo "Waiting for containers to be ready..."
 sleep 5
 
 echo ""
+echo "Creating SQLite database file..."
+docker-compose exec -T app touch /var/www/html/database/database.sqlite
+docker-compose exec -T app chown www-data:www-data /var/www/html/database/database.sqlite
+
+echo ""
 echo "Generating application key..."
 docker-compose exec -T app php artisan key:generate
 

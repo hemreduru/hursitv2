@@ -29,7 +29,6 @@ yarn-error.log
 Homestead.json
 Homestead.yaml
 auth.json
-README.md
 *.md
 tests
 phpunit.xml

@@ -20,17 +20,23 @@ This directory contains Docker configuration files for running the HursitV2 Lara
    docker-compose up -d --build
    ```
 
-4. Generate application key:
+4. Create SQLite database file:
+   ```bash
+   docker-compose exec app touch /var/www/html/database/database.sqlite
+   docker-compose exec app chown www-data:www-data /var/www/html/database/database.sqlite
+   ```
+
+5. Generate application key:
    ```bash
    docker-compose exec app php artisan key:generate
    ```
 
-5. Run migrations:
+6. Run migrations:
    ```bash
    docker-compose exec app php artisan migrate --force
    ```
 
-6. Access the application at `http://localhost`
+7. Access the application at `http://localhost`
 
 ## Docker Commands
 
