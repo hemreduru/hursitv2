@@ -5,6 +5,47 @@
 ## Project Overview
 Laravel project with comprehensive testing suite.
 
+## Docker Setup
+
+### Quick Start with Docker
+
+1. Clone the repository:
+```bash
+git clone https://github.com/hemreduru/hursitv2.git
+cd hursitv2
+```
+
+2. Copy the environment file:
+```bash
+cp .env.example .env
+```
+
+3. Build and start the containers:
+```bash
+docker-compose up -d --build
+```
+
+4. Generate application key:
+```bash
+docker-compose exec app php artisan key:generate
+```
+
+5. Run database migrations:
+```bash
+docker-compose exec app php artisan migrate --force
+```
+
+6. Access the application at `http://localhost`
+
+### Docker Commands
+
+- **Stop containers**: `docker-compose down`
+- **View logs**: `docker-compose logs -f app`
+- **Access container**: `docker-compose exec app bash`
+- **Run artisan commands**: `docker-compose exec app php artisan <command>`
+
+For more detailed Docker documentation, see [docker/README.md](docker/README.md).
+
 ## Testing
 Run tests locally:
 ```bash
