@@ -11,10 +11,10 @@ services:
       - "80:80"
     volumes:
       - ./storage:/var/www/html/storage
-      - ./.env:/var/www/html/.env
+      - ./.env:/var/www/html/.env  # Make sure .env file exists before starting
     environment:
-      - APP_ENV=production
-      - APP_DEBUG=false
+      # Database configuration
+      # These can be overridden by the .env file
       - DB_CONNECTION=mysql
       - DB_HOST=mysql
       - DB_PORT=3306
