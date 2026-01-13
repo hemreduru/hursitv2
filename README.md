@@ -9,6 +9,22 @@ Laravel project with comprehensive testing suite.
 
 ### Quick Start with Docker
 
+**Option 1: Using the setup script (Recommended)**
+
+```bash
+git clone https://github.com/hemreduru/hursitv2.git
+cd hursitv2
+./docker-setup.sh
+```
+
+The script will automatically:
+- Create `.env` file from `.env.example`
+- Build and start Docker containers
+- Generate application key
+- Run database migrations
+
+**Option 2: Manual setup**
+
 1. Clone the repository:
 ```bash
 git clone https://github.com/hemreduru/hursitv2.git
