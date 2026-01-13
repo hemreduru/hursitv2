@@ -5,7 +5,9 @@
 ## Project Overview
 Laravel project with comprehensive testing suite.
 
-## Docker Setup
+## Docker Setup (LAMP Stack)
+
+This project includes Docker support with LAMP stack (Linux, Apache, MySQL/SQLite, PHP).
 
 ### Quick Start with Docker
 

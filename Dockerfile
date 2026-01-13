@@ -1,5 +1,5 @@
-# Use PHP 8.2 with FPM as base image
-FROM php:8.2-fpm
+# Use PHP 8.2 with Apache as base image
+FROM php:8.2-apache
 
 # Set working directory
 WORKDIR /var/www/html
@@ -15,7 +15,6 @@ RUN apt-get update && apt-get install -y \
     unzip \
     sqlite3 \
     libsqlite3-dev \
-    nginx \
     supervisor \
     nodejs \
     npm
@@ -25,6 +24,9 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
 RUN docker-php-ext-install pdo_sqlite pdo_mysql mbstring exif pcntl bcmath gd
+
+# Enable Apache modules
+RUN a2enmod rewrite headers
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -36,7 +38,7 @@ COPY . /var/www/html
 RUN chown -R www-data:www-data /var/www/html
 
 # Install PHP dependencies
-RUN composer install --optimize-autoloader --no-dev
+RUN composer install --optimize-autoloader --no-dev --no-interaction
 
 # Install Node dependencies and build assets
 RUN npm install
@@ -46,13 +48,8 @@ RUN npm run build
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/database
 RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/database
 
-# Copy Nginx configuration
-COPY docker/nginx/nginx.conf /etc/nginx/nginx.conf
-COPY docker/nginx/default.conf /etc/nginx/sites-available/default
-
-# Create sites-enabled directory and enable the site
-RUN mkdir -p /etc/nginx/sites-enabled && \
-    ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
+# Copy Apache configuration
+COPY docker/apache/laravel.conf /etc/apache2/sites-available/000-default.conf
 
 # Copy supervisor configuration
 COPY docker/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf

@@ -1,6 +1,6 @@
 # Docker Setup for HursitV2
 
-This directory contains Docker configuration files for running the HursitV2 Laravel application.
+This directory contains Docker configuration files for running the HursitV2 Laravel application with LAMP stack (Linux, Apache, MySQL/SQLite, PHP).
 
 ## Prerequisites
 
@@ -74,8 +74,7 @@ docker-compose exec app composer <command>
 
 - `Dockerfile` - Main Docker image configuration
 - `docker-compose.yml` - Docker Compose orchestration
-- `docker/nginx/nginx.conf` - Nginx main configuration
-- `docker/nginx/default.conf` - Laravel site configuration
+- `docker/apache/laravel.conf` - Apache virtual host configuration for Laravel
 - `docker/supervisor/supervisord.conf` - Supervisor process manager configuration
 
 ## Volumes
@@ -87,11 +86,20 @@ The following directories are mounted as volumes for data persistence:
 
 ## Ports
 
-- Port 80: Web server (Nginx)
+- Port 80: Web server (Apache)
+
+## LAMP Stack Components
+
+- **L**inux: Debian (from PHP base image)
+- **A**pache: Apache 2.4 with mod_php
+- **M**ySQL/SQLite: SQLite is used as the database
+- **P**HP: PHP 8.2 with required extensions
 
 ## Notes
 
 - The application runs in production mode by default
 - SQLite is used as the database
-- Both PHP-FPM and Nginx run in a single container managed by Supervisor
+- Apache runs with mod_php (not PHP-FPM)
+- Apache is managed by Supervisor for process monitoring
 - Frontend assets are built during the Docker image build process
+- Apache mod_rewrite is enabled for Laravel routing
