@@ -81,6 +81,7 @@ return [
     'admin_content' => 'Content',
     'admin_published_at' => 'Published At',
     'admin_reading_time' => 'Reading Time (min)',
+    'admin_reading_time_auto' => 'Calculated automatically from content.',
     'admin_tags' => 'Tags',
     'admin_select_multiple' => 'Hold Ctrl/Cmd to select multiple.',
     'admin_save' => 'Save Post',

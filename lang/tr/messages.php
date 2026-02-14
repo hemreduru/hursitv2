@@ -81,6 +81,7 @@ return [
     'admin_content' => 'Icerik',
     'admin_published_at' => 'Yayinlanma Tarihi',
     'admin_reading_time' => 'Okuma Suresi (dk)',
+    'admin_reading_time_auto' => 'Icerikten otomatik hesaplanir.',
     'admin_tags' => 'Etiketler',
     'admin_select_multiple' => 'Coklu secim icin Ctrl/Cmd tusuna basili tutun.',
     'admin_save' => 'Kaydet',

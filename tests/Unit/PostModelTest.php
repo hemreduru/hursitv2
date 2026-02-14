@@ -1,27 +1,23 @@
 <?php
 
 use App\Models\Post;
-use Illuminate\Support\Str;
 
 test('post stores dual language content correctly', function () {
     $post = Post::factory()->create([
-        'title_tr' => 'Türkçe Başlık',
+        'title_tr' => 'Turkce Baslik',
         'title_en' => 'English Title',
-        'content_tr' => '<p>Türkçe içerik</p>',
+        'content_tr' => '<p>Turkce icerik</p>',
         'content_en' => '<p>English content</p>',
     ]);
 
-    expect($post->title_tr)->toBe('Türkçe Başlık')
+    expect($post->title_tr)->toBe('Turkce Baslik')
         ->and($post->title_en)->toBe('English Title')
-        ->and($post->content_tr)->toBe('<p>Türkçe içerik</p>')
+        ->and($post->content_tr)->toBe('<p>Turkce icerik</p>')
         ->and($post->content_en)->toBe('<p>English content</p>');
 });
 
 test('post slug is unique', function () {
     Post::factory()->create(['slug_tr' => 'test-slug']);
-
-    // Attempting to create another post with same slug should fail or be handled by logic
-    // But unit test usually tests DB constraints if migration sets unique.
 
     $this->expectException(\Illuminate\Database\QueryException::class);
 
@@ -30,16 +26,41 @@ test('post slug is unique', function () {
 
 test('post retrieves correct attribute based on locale', function () {
     $post = Post::factory()->create([
-        'title_tr' => 'Türkçe Başlık',
+        'title_tr' => 'Turkce Baslik',
         'title_en' => 'English Title',
     ]);
 
     app()->setLocale('tr');
-    // Assuming you have an accessor like 'title' that checks locale.
-    // If not, we skip this. Let's assume you access specific fields directly in admin.
-    // If you have a 'title' accessor:
-    // expect($post->title)->toBe('Türkçe Başlık');
+    expect($post->title)->toBe('Turkce Baslik');
 
-    // Since we are explicit in Admin panel, we test explicit fields.
-    expect($post->title_tr)->toBe('Türkçe Başlık');
+    app()->setLocale('en');
+    expect($post->title)->toBe('English Title');
+});
+
+test('post reading time is calculated dynamically from localized content', function () {
+    $englishContent = '<p>' . implode(' ', array_fill(0, 420, 'word')) . '</p>';
+    $turkishContent = '<p>' . implode(' ', array_fill(0, 80, 'kelime')) . '</p>';
+
+    $post = Post::factory()->create([
+        'content_en' => $englishContent,
+        'content_tr' => $turkishContent,
+        'reading_time' => 99,
+    ]);
+
+    app()->setLocale('en');
+    expect($post->reading_time)->toBe(3);
+
+    app()->setLocale('tr');
+    expect($post->reading_time)->toBe(1);
+});
+
+test('post reading time falls back to stored value when localized content is empty', function () {
+    $post = Post::factory()->create([
+        'content_en' => '',
+        'content_tr' => '',
+        'reading_time' => 7,
+    ]);
+
+    app()->setLocale('en');
+    expect($post->reading_time)->toBe(7);
 });
