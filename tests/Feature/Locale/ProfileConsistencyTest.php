@@ -5,6 +5,8 @@ use App\Repositories\Interfaces\ProfileRepositoryInterface;
 use App\Services\HomeService;
 
 test('home service resolves the same primary profile for all locales', function () {
+    Profile::query()->delete();
+
     $primary = Profile::factory()->create(['name' => 'Primary Profile']);
     Profile::factory()->create(['name' => 'Secondary Profile']);
 
@@ -20,6 +22,8 @@ test('home service resolves the same primary profile for all locales', function 
 });
 
 test('profile repository returns primary profile record', function () {
+    Profile::query()->delete();
+
     $primary = Profile::factory()->create(['name' => 'Primary Profile']);
     Profile::factory()->create(['name' => 'Secondary Profile']);
 
