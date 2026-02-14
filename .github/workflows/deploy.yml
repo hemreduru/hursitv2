@@ -55,6 +55,7 @@ jobs:
             fi
 
             composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev --no-scripts
+            rm -f bootstrap/cache/packages.php bootstrap/cache/services.php
             php artisan package:discover --ansi
 
             if command -v npm >/dev/null 2>&1; then
