@@ -50,8 +50,11 @@
               "value": "={{ $json.url }}"
             }
           ]
-        }
-      }
+        },
+        "options": {}
+      },
+      "retryOnFail": true,
+      "maxTries": 5
     },
     {
       "id": "merge-rss-data",
@@ -83,8 +86,13 @@
               "content": "=Select ONLY ONE most important Laravel or DevOps news from below and return raw JSON.\n\n{{ $json.news_context }}\n\nFormat:\n{ \"topic\":\"\", \"category\":\"\", \"source_link\":\"\", \"original_summary\":\"\" }"
             }
           ]
-        }
-      }
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
     },
     {
       "id": "parse-selector-json",
@@ -125,8 +133,11 @@
               "value": "100"
             }
           ]
-        }
-      }
+        },
+        "options": {}
+      },
+      "retryOnFail": true,
+      "maxTries": 5
     },
     {
       "id": "gemini-duplicate-judge",
@@ -145,8 +156,13 @@
               "content": "=Given candidate topic and published history, decide duplicate risk. Return JSON only.\nCandidate Topic: {{ $node['Parse Selector JSON'].json.topic }}\nCandidate Source: {{ $node['Parse Selector JSON'].json.source_link }}\nHistory: {{ JSON.stringify($json.items || []) }}\nOutput:\n{ \"is_duplicate\": false, \"score\": 0.0, \"matched_post_id\": null, \"reason\": \"\" }"
             }
           ]
-        }
-      }
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
     },
     {
       "id": "parse-duplicate-json",
@@ -191,8 +207,11 @@
       ],
       "parameters": {
         "chatId": "5679822050",
-        "text": "=⏭️ Duplicate skipped. score={{ $json.score }} reason={{ $json.reason }}"
-      }
+        "text": "=⏭️ Duplicate skipped. score={{ $json.score }} reason={{ $json.reason }}",
+        "additionalFields": {}
+      },
+      "retryOnFail": true,
+      "maxTries": 5
     },
     {
       "id": "get-taxonomy",
@@ -207,8 +226,11 @@
         "method": "GET",
         "url": "https://www.hursit.me/api/automation/taxonomy",
         "authentication": "predefinedCredentialType",
-        "nodeCredentialType": "httpBearerAuth"
-      }
+        "nodeCredentialType": "httpBearerAuth",
+        "options": {}
+      },
+      "retryOnFail": true,
+      "maxTries": 5
     },
     {
       "id": "gemini-category-selector",
@@ -227,8 +249,13 @@
               "content": "=Choose only from taxonomy slugs.\nTopic: {{ $node['Parse Selector JSON'].json.topic }}\nSummary: {{ $node['Parse Selector JSON'].json.original_summary }}\nTaxonomy: {{ JSON.stringify($json) }}\nOutput JSON:\n{ \"primary_category_slug\":\"\", \"secondary_tag_slugs\":[] }"
             }
           ]
-        }
-      }
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
     },
     {
       "id": "validate-category-json",
@@ -260,8 +287,13 @@
               "content": "=Write a 600-700 word technical HTML fragment.\nTopic: {{ $node['Parse Selector JSON'].json.topic }}\nSource Summary: {{ $node['Parse Selector JSON'].json.original_summary }}\nSource Link: {{ $node['Parse Selector JSON'].json.source_link }}"
             }
           ]
-        }
-      }
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
     },
     {
       "id": "gemini-translator",
@@ -280,8 +312,13 @@
               "content": "=Translate to Turkish. Keep HTML structure exactly.\n{{ $json.content?.parts?.[0]?.text || $json.text }}"
             }
           ]
-        }
-      }
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
     },
     {
       "id": "extract-headings",
@@ -313,9 +350,14 @@
               "content": "=Generate a clean editorial image for: {{ $json.heading_1 }}. Return image as base64 only."
             }
           ]
-        }
+        },
+        "builtInTools": {},
+        "options": {}
       },
-      "continueOnFail": true
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
     },
     {
       "id": "gemini-image-2",
@@ -334,9 +376,14 @@
               "content": "=Generate a clean editorial image for: {{ $json.heading_2 }}. Return image as base64 only."
             }
           ]
-        }
+        },
+        "builtInTools": {},
+        "options": {}
       },
-      "continueOnFail": true
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
     },
     {
       "id": "upload-image-1",
@@ -362,9 +409,12 @@
               "inputDataFieldName": "image_1"
             }
           ]
-        }
+        },
+        "options": {}
       },
-      "continueOnFail": true
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 5
     },
     {
       "id": "upload-image-2",
@@ -390,9 +440,12 @@
               "inputDataFieldName": "image_2"
             }
           ]
-        }
+        },
+        "options": {}
       },
-      "continueOnFail": true
+      "continueOnFail": true,
+      "retryOnFail": true,
+      "maxTries": 5
     },
     {
       "id": "inject-inline-images",
@@ -455,8 +508,11 @@
               "value": "={{ $node['Validate Category JSON'].json.secondary_tag_slugs }}"
             }
           ]
-        }
-      }
+        },
+        "options": {}
+      },
+      "retryOnFail": true,
+      "maxTries": 5
     },
     {
       "id": "create-post-automated",
@@ -474,8 +530,11 @@
         "nodeCredentialType": "httpBearerAuth",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ {\n  \"title_en\": $json.title_en,\n  \"title_tr\": $json.title_tr,\n  \"short_description_en\": $json.content_en.replace(/<[^>]+>/g, '').substring(0,160),\n  \"short_description_tr\": $json.content_tr.replace(/<[^>]+>/g, '').substring(0,160),\n  \"content_en\": $json.content_en,\n  \"content_tr\": $json.content_tr,\n  \"status\": \"published\",\n  \"thumbnail\": $json.thumbnail,\n  \"source_url\": $json.source_url,\n  \"primary_category_slug\": $json.primary_category_slug,\n  \"secondary_tag_slugs\": $json.secondary_tag_slugs\n} }}"
-      }
+        "jsonBody": "={{ {\n  \"title_en\": $json.title_en,\n  \"title_tr\": $json.title_tr,\n  \"short_description_en\": $json.content_en.replace(/<[^>]+>/g, '').substring(0,160),\n  \"short_description_tr\": $json.content_tr.replace(/<[^>]+>/g, '').substring(0,160),\n  \"content_en\": $json.content_en,\n  \"content_tr\": $json.content_tr,\n  \"status\": \"published\",\n  \"thumbnail\": $json.thumbnail,\n  \"source_url\": $json.source_url,\n  \"primary_category_slug\": $json.primary_category_slug,\n  \"secondary_tag_slugs\": $json.secondary_tag_slugs\n} }}",
+        "options": {}
+      },
+      "retryOnFail": true,
+      "maxTries": 5
     },
     {
       "id": "telegram-success",
@@ -488,8 +547,11 @@
       ],
       "parameters": {
         "chatId": "5679822050",
-        "text": "=✅ Weekly automated post published: {{ $json.link }}"
-      }
+        "text": "=✅ Weekly automated post published: {{ $json.link }}",
+        "additionalFields": {}
+      },
+      "retryOnFail": true,
+      "maxTries": 5
     }
   ],
   "connections": {
@@ -758,5 +820,9 @@
         ]
       ]
     }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true
   }
 }
