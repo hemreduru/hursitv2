@@ -54,7 +54,8 @@ jobs:
               composer config --global http-basic.composer.fluxui.dev "${{ secrets.FLUX_USERNAME }}" "${{ secrets.FLUX_LICENSE_KEY }}"
             fi
 
-            composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
+            composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev --no-scripts
+            php artisan package:discover --ansi
 
             if command -v npm >/dev/null 2>&1; then
               npm ci
