@@ -37,17 +37,31 @@ test('authenticated user can upload an image', function () {
 });
 
 test('api upload stores files on configured disk', function () {
-    Config::set('filesystems.uploads_disk', 's3');
-    Storage::fake('s3');
+    Config::set('filesystems.uploads_disk', 'public');
+    Storage::fake('public');
 
     $user = User::factory()->admin()->create();
     Sanctum::actingAs($user, ['*']);
 
     $response = postJson('/api/upload', [
-        'file' => UploadedFile::fake()->image('s3-image.jpg'),
+        'file' => UploadedFile::fake()->image('public-image.jpg'),
     ])->assertStatus(201);
 
-    Storage::disk('s3')->assertExists($response->json('path'));
+    Storage::disk('public')->assertExists($response->json('path'));
+});
+
+test('api upload falls back to public disk when configured disk is invalid', function () {
+    Config::set('filesystems.uploads_disk', 'invalid-disk');
+    Storage::fake('public');
+
+    $user = User::factory()->admin()->create();
+    Sanctum::actingAs($user, ['*']);
+
+    $response = postJson('/api/upload', [
+        'file' => UploadedFile::fake()->image('fallback-image.jpg'),
+    ])->assertStatus(201);
+
+    Storage::disk('public')->assertExists($response->json('path'));
 });
 
 test('api upload validates image file', function () {

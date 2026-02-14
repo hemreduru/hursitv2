@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\StoreUploadRequest;
-use Illuminate\Support\Facades\Storage;
+use App\Services\UploadStorageService;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
 class UploadController extends Controller
 {
+    public function __construct(protected UploadStorageService $uploadStorageService) {}
+
     public function store(StoreUploadRequest $request)
     {
         try {
@@ -17,25 +19,12 @@ class UploadController extends Controller
                 return response()->json(['message' => __('messages.api_invalid_upload')], 400);
             }
 
-            $disk = config('filesystems.uploads_disk', 'public');
-            $configuredDisks = config('filesystems.disks', []);
-
-            if (! array_key_exists($disk, $configuredDisks)) {
-                Log::warning('api.upload.disk.invalid', ['disk' => $disk]);
-                $disk = 'public';
-            }
-
-            $path = $request->file('file')->store('uploads', $disk);
-            $url = Storage::disk($disk)->url($path);
-
-            if (! str_starts_with($url, 'http://') && ! str_starts_with($url, 'https://')) {
-                $url = asset($url);
-            }
+            $uploaded = $this->uploadStorageService->storeImage($request->file('file'));
 
             return response()->json([
                 'message' => __('messages.api_upload_success'),
-                'path' => $path,
-                'url' => $url,
+                'path' => $uploaded['path'],
+                'url' => $uploaded['url'],
             ], 201);
         } catch (Throwable $exception) {
             Log::error('api.upload.store.failed', [

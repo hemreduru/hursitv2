@@ -12,8 +12,9 @@ php artisan test
 ```
 
 ## Upload Storage
-Upload API uses `FILESYSTEM_UPLOADS_DISK` (default `s3`).
-Set AWS credentials in `.env` (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_DEFAULT_REGION`, `AWS_BUCKET`, optional `AWS_URL` / `AWS_ENDPOINT`).
+Upload API uses `FILESYSTEM_UPLOADS_DISK` (default `public`).
+Default local path is `storage/app/public/uploads` and public URL requires `php artisan storage:link`.
+S3 can still be used optionally by setting `FILESYSTEM_UPLOADS_DISK=s3` and providing `AWS_*` credentials.
 
 ## CI/CD
 Coverage reports are automatically sent to Coveralls on push to `main`.
