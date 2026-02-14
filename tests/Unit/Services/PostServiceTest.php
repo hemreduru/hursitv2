@@ -45,3 +45,85 @@ test('service can filter by both search and status', function () {
         ->and($results->first()->title_en)->toBe('FindMe')
         ->and($results->first()->status)->toBe('published');
 });
+
+test('service returns latest published posts except active post with limit', function () {
+    $activePost = Post::factory()->create([
+        'title_en' => 'Active Post',
+        'status' => 'published',
+        'published_at' => now()->subMinutes(30),
+    ]);
+
+    Post::factory()->create([
+        'title_en' => 'Draft Candidate',
+        'status' => 'draft',
+        'published_at' => now()->subMinute(),
+    ]);
+
+    foreach (range(1, 8) as $index) {
+        Post::factory()->create([
+            'title_en' => 'Recent Post ' . $index,
+            'status' => 'published',
+            'published_at' => now()->subMinutes($index),
+        ]);
+    }
+
+    $results = $this->service->getLatestPublishedExcept($activePost->id, 6);
+    $titles = $results->pluck('title_en')->values()->all();
+
+    expect($results)->toHaveCount(6)
+        ->and($results->contains('id', $activePost->id))->toBeFalse()
+        ->and($titles)->toBe([
+            'Recent Post 1',
+            'Recent Post 2',
+            'Recent Post 3',
+            'Recent Post 4',
+            'Recent Post 5',
+            'Recent Post 6',
+        ]);
+});
+
+test('service returns previous and next published posts using published_at and id ordering', function () {
+    $referenceTime = now()->startOfMinute();
+
+    $sameTimeLower = Post::factory()->create([
+        'title_en' => 'Same Time Lower',
+        'status' => 'published',
+        'published_at' => $referenceTime,
+    ]);
+
+    $currentPost = Post::factory()->create([
+        'title_en' => 'Current Post',
+        'status' => 'published',
+        'published_at' => $referenceTime,
+    ]);
+
+    $sameTimeHigher = Post::factory()->create([
+        'title_en' => 'Same Time Higher',
+        'status' => 'published',
+        'published_at' => $referenceTime,
+    ]);
+
+    Post::factory()->create([
+        'title_en' => 'Older Post',
+        'status' => 'published',
+        'published_at' => $referenceTime->copy()->subDay(),
+    ]);
+
+    Post::factory()->create([
+        'title_en' => 'Newer Post',
+        'status' => 'published',
+        'published_at' => $referenceTime->copy()->addDay(),
+    ]);
+
+    Post::factory()->create([
+        'title_en' => 'Draft Same Time',
+        'status' => 'draft',
+        'published_at' => $referenceTime,
+    ]);
+
+    $previousPost = $this->service->getPreviousPublished($currentPost);
+    $nextPost = $this->service->getNextPublished($currentPost);
+
+    expect($previousPost?->id)->toBe($sameTimeHigher->id)
+        ->and($nextPost?->id)->toBe($sameTimeLower->id);
+});

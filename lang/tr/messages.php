@@ -27,6 +27,11 @@ return [
     'back_to_projects' => 'Projelere Don',
     'share_this_post' => 'Paylas',
     'related_posts' => 'Ilgili Yazilar',
+    'latest_posts' => 'Son Yazilar',
+    'previous_post' => 'Onceki Yazi',
+    'next_post' => 'Sonraki Yazi',
+    'no_recent_posts' => 'Gosterilecek yeni yazi bulunamadi.',
+    'continue_reading' => 'Okumaya Devam Et',
     'all_projects' => 'Tum Projeler',
     'all_writings' => 'Tum Yazilar',
 

@@ -16,7 +16,7 @@ class Show extends Component
         // Check availability in mount to handle redirects
         $post = $postService->getBySlug($this->slug, app()->getLocale());
 
-        if (!$post) {
+        if (! $post) {
             // Smart 404 Recovery: Check if slug belongs to another locale
             $alternativePost = $postService->findAny($this->slug);
 
@@ -26,6 +26,7 @@ class Show extends Component
 
                 if ($targetSlug && $targetSlug !== $this->slug) {
                     $this->redirect(route('blog.show', $targetSlug), navigate: true);
+
                     return;
                 }
             }
@@ -38,8 +39,15 @@ class Show extends Component
     {
         $post = $postService->getBySlug($this->slug, app()->getLocale());
 
+        if (! $post) {
+            abort(404);
+        }
+
         return view('livewire.public.blog.show', [
-            'post' => $post
+            'post' => $post,
+            'latestPosts' => $postService->getLatestPublishedExcept($post->id, 6),
+            'previousPost' => $postService->getPreviousPublished($post),
+            'nextPost' => $postService->getNextPublished($post),
         ])->layout('layouts.app', [
             'title' => $post->title . ' | Hurşit Emre Duru',
             'meta_description' => $post->short_description,

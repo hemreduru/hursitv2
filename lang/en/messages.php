@@ -27,6 +27,11 @@ return [
     'back_to_projects' => 'Back to Projects',
     'share_this_post' => 'Share this post',
     'related_posts' => 'Related Posts',
+    'latest_posts' => 'Latest Posts',
+    'previous_post' => 'Previous Post',
+    'next_post' => 'Next Post',
+    'no_recent_posts' => 'No recent posts found.',
+    'continue_reading' => 'Continue Reading',
     'all_projects' => 'All Projects',
     'all_writings' => 'All Writings',
 
