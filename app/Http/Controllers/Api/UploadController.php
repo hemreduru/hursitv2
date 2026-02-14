@@ -17,13 +17,25 @@ class UploadController extends Controller
                 return response()->json(['message' => __('messages.api_invalid_upload')], 400);
             }
 
-            $path = $request->file('file')->store('uploads', 'public');
-            $url = Storage::url($path);
+            $disk = config('filesystems.uploads_disk', 'public');
+            $configuredDisks = config('filesystems.disks', []);
+
+            if (! array_key_exists($disk, $configuredDisks)) {
+                Log::warning('api.upload.disk.invalid', ['disk' => $disk]);
+                $disk = 'public';
+            }
+
+            $path = $request->file('file')->store('uploads', $disk);
+            $url = Storage::disk($disk)->url($path);
+
+            if (! str_starts_with($url, 'http://') && ! str_starts_with($url, 'https://')) {
+                $url = asset($url);
+            }
 
             return response()->json([
                 'message' => __('messages.api_upload_success'),
                 'path' => $path,
-                'url' => asset($url),
+                'url' => $url,
             ], 201);
         } catch (Throwable $exception) {
             Log::error('api.upload.store.failed', [

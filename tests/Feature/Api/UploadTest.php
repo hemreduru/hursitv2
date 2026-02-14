@@ -2,6 +2,7 @@
 
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\Sanctum;
 use function Pest\Laravel\{postJson};
@@ -12,6 +13,7 @@ test('api upload requires authentication', function () {
 });
 
 test('authenticated user can upload an image', function () {
+    Config::set('filesystems.uploads_disk', 'public');
     Storage::fake('public');
     $user = User::factory()->admin()->create();
     Sanctum::actingAs($user, ['*']);
@@ -32,6 +34,20 @@ test('authenticated user can upload an image', function () {
     // Check if file stored
     $path = $response->json('path');
     Storage::disk('public')->assertExists($path);
+});
+
+test('api upload stores files on configured disk', function () {
+    Config::set('filesystems.uploads_disk', 's3');
+    Storage::fake('s3');
+
+    $user = User::factory()->admin()->create();
+    Sanctum::actingAs($user, ['*']);
+
+    $response = postJson('/api/upload', [
+        'file' => UploadedFile::fake()->image('s3-image.jpg'),
+    ])->assertStatus(201);
+
+    Storage::disk('s3')->assertExists($response->json('path'));
 });
 
 test('api upload validates image file', function () {
