@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Repositories\Interfaces\PostRepositoryInterface;
+use App\Support\HtmlSanitizer;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -14,10 +15,12 @@ use Throwable;
 class PostService
 {
     protected PostRepositoryInterface $postRepository;
+    protected HtmlSanitizer $htmlSanitizer;
 
-    public function __construct(PostRepositoryInterface $postRepository)
+    public function __construct(PostRepositoryInterface $postRepository, HtmlSanitizer $htmlSanitizer)
     {
         $this->postRepository = $postRepository;
+        $this->htmlSanitizer = $htmlSanitizer;
     }
 
     public function getPublished(string $locale): Collection
@@ -35,6 +38,7 @@ class PostService
         DB::beginTransaction();
 
         try {
+            $data = $this->sanitizeLocalizedContent($data);
             $tags = $data['tags'] ?? [];
             unset($data['tags']);
 
@@ -69,6 +73,7 @@ class PostService
         DB::beginTransaction();
 
         try {
+            $data = $this->sanitizeLocalizedContent($data);
             $tags = $data['tags'] ?? [];
             unset($data['tags']);
 
@@ -219,5 +224,16 @@ class PostService
         }
 
         $post->tags()->sync($tagIds);
+    }
+
+    protected function sanitizeLocalizedContent(array $data): array
+    {
+        foreach (['content_en', 'content_tr'] as $field) {
+            if (array_key_exists($field, $data)) {
+                $data[$field] = $this->htmlSanitizer->sanitizePost($data[$field]);
+            }
+        }
+
+        return $data;
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Repositories\Interfaces\ProjectRepositoryInterface;
+use App\Support\HtmlSanitizer;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -13,10 +14,12 @@ use Throwable;
 class ProjectService
 {
     protected ProjectRepositoryInterface $projectRepository;
+    protected HtmlSanitizer $htmlSanitizer;
 
-    public function __construct(ProjectRepositoryInterface $projectRepository)
+    public function __construct(ProjectRepositoryInterface $projectRepository, HtmlSanitizer $htmlSanitizer)
     {
         $this->projectRepository = $projectRepository;
+        $this->htmlSanitizer = $htmlSanitizer;
     }
 
     public function getFeatured(string $locale): Collection
@@ -67,6 +70,7 @@ class ProjectService
     {
         try {
             DB::beginTransaction();
+            $data = $this->sanitizeLocalizedContent($data);
             $project = $this->projectRepository->create($data);
             DB::commit();
 
@@ -94,6 +98,7 @@ class ProjectService
     {
         try {
             DB::beginTransaction();
+            $data = $this->sanitizeLocalizedContent($data);
             $updated = $this->projectRepository->update($id, $data);
             DB::commit();
 
@@ -140,5 +145,16 @@ class ProjectService
 
             throw $exception;
         }
+    }
+
+    protected function sanitizeLocalizedContent(array $data): array
+    {
+        foreach (['content_en', 'content_tr'] as $field) {
+            if (array_key_exists($field, $data)) {
+                $data[$field] = $this->htmlSanitizer->sanitizeProject($data[$field]);
+            }
+        }
+
+        return $data;
     }
 }
