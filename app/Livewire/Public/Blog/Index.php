@@ -36,13 +36,18 @@ class Index extends Component
 
     public function render(PostService $postService)
     {
+        $locale = app()->getLocale();
         $posts = $postService->getPublishedWithFilters(
-            app()->getLocale(),
+            $locale,
             15,
             ['search' => $this->search, 'tag' => $this->tag]
         );
 
-        $tags = Tag::has('posts')->distinct()->get();
+        $tags = Tag::query()
+            ->where('locale', $locale)
+            ->whereHas('posts')
+            ->orderBy('name')
+            ->get();
 
         return view('livewire.public.blog.index', [
             'posts' => $posts,

@@ -17,7 +17,6 @@
                         <tr>
                             <th class="px-6 py-3 font-semibold text-slate-900 dark:text-white">{{ __('messages.admin_name') }}</th>
                             <th class="px-6 py-3 font-semibold text-slate-900 dark:text-white">{{ __('messages.admin_job_title') }}</th>
-                            <th class="px-6 py-3 font-semibold text-slate-900 dark:text-white">{{ __('messages.admin_lang') }}</th>
                             <th class="px-6 py-3 font-semibold text-slate-900 dark:text-white text-right">{{ __('messages.admin_actions') }}</th>
                         </tr>
                     </thead>
@@ -26,14 +25,13 @@
                         <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
                             <td class="px-6 py-4 font-medium">{{ $profile->name }}</td>
                             <td class="px-6 py-4 text-slate-500">{{ $profile->title }}</td>
-                            <td class="px-6 py-4 text-slate-500 uppercase">{{ $profile->locale }}</td>
                             <td class="px-6 py-4 text-right">
                                 <a href="{{ route('admin.profile.edit', $profile->id) }}" class="text-slate-400 hover:text-primary transition-colors mr-2 inline-block"><span class="material-symbols-outlined text-lg">edit</span></a>
                             </td>
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="4" class="px-6 py-4 text-center text-slate-500">{{ __('messages.admin_no_profiles') }}</td>
+                            <td colspan="3" class="px-6 py-4 text-center text-slate-500">{{ __('messages.admin_no_profiles') }}</td>
                         </tr>
                         @endforelse
                     </tbody>

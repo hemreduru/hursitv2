@@ -12,12 +12,10 @@ class Index extends Component
 
     public $search = '';
     public $featured = '';
-    public $locale = '';
 
     protected $queryString = [
         'search' => ['except' => ''],
         'featured' => ['except' => ''],
-        'locale' => ['except' => ''],
     ];
 
     public function updatedSearch()
@@ -30,17 +28,11 @@ class Index extends Component
         $this->resetPage();
     }
 
-    public function updatedLocale()
-    {
-        $this->resetPage();
-    }
-
     public function render(ProjectService $projectService)
     {
         $filters = [
             'search' => $this->search,
             'featured' => $this->featured,
-            'locale' => $this->locale,
         ];
 
         $projects = $projectService->paginate(10, $filters);

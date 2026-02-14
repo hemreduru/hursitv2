@@ -106,9 +106,9 @@ return [
 
     // Profile
     'admin_profile_settings' => 'Profile Settings',
-    'admin_manage_profile' => 'Manage your public profile information for each language.',
+    'admin_manage_profile' => 'Manage your public profile information.',
     'admin_new_profile' => 'New Profile',
-    'admin_no_profiles' => 'No profiles found. Usually you need one per language (EN, TR).',
+    'admin_no_profiles' => 'No profile found. Create one primary profile record.',
     'admin_create_profile' => 'Create Profile',
     'admin_job_title' => 'Title (Job Title)',
     'admin_contact_email' => 'Contact Email',

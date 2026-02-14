@@ -21,7 +21,7 @@ class HomeService
     public function getHomeData(string $locale): array
     {
         return [
-            'profile' => $this->profileRepository->getByLocale($locale)->first(),
+            'profile' => $this->profileRepository->getPrimary(),
             'skills' => $this->skillRepository->getAllGroupedByCategory(),
             'experiences' => $this->experienceRepository->getByLocale($locale),
             'featuredProjects' => $this->projectRepository->getFeatured($locale),

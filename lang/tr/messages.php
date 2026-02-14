@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 return [
     'available_for_hire' => 'Ä°ÅŸ tekliflerine aÃ§Ä±k',
@@ -106,9 +106,9 @@ return [
 
     // Profile
     'admin_profile_settings' => 'Profil AyarlarÄ±',
-    'admin_manage_profile' => 'Her dil iÃ§in genel profil bilgilerinizi yÃ¶netin.',
+    'admin_manage_profile' => 'Genel profil bilgilerinizi yonetin.',
     'admin_new_profile' => 'Yeni Profil',
-    'admin_no_profiles' => 'Profil bulunamadÄ±. Genellikle dil baÅŸÄ±na bir tane (TR, EN) gerekir.',
+    'admin_no_profiles' => 'Profil bulunamadi. Bir birincil profil kaydi olusturun.',
     'admin_create_profile' => 'Profil OluÅŸtur',
     'admin_job_title' => 'Ãœnvan (Ä°ÅŸ ÃœnvanÄ±)',
     'admin_contact_email' => 'Ä°letiÅŸim E-postasÄ±',
