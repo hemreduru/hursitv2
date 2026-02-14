@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin\Tags;
 
 use App\Models\Tag;
+use App\Services\TagService;
 use Livewire\Component;
 
 class Edit extends Component
@@ -22,7 +23,7 @@ class Edit extends Component
         }
     }
 
-    public function save()
+    public function save(TagService $tagService)
     {
         $this->validate([
             'name' => 'required|string|max:255',
@@ -37,10 +38,10 @@ class Edit extends Component
         ];
 
         if ($this->tag) {
-            $this->tag->update($data);
+            $tagService->update($this->tag, $data);
             session()->flash('message', 'Tag updated successfully.');
         } else {
-            Tag::create($data);
+            $tagService->create($data);
             session()->flash('message', 'Tag created successfully.');
             return redirect()->route('admin.tags.index');
         }

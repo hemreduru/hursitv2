@@ -50,12 +50,10 @@ class Index extends Component
         ])->layout('layouts.admin');
     }
 
-    public function delete($id)
+    public function delete(int $id, PostService $postService): void
     {
-        $post = \App\Models\Post::find($id);
-        if ($post) {
-            $post->delete();
-             $this->dispatch('show-toast', [
+        if ($postService->delete($id)) {
+            $this->dispatch('show-toast', [
                 'type' => 'success',
                 'message' => __('messages.item_deleted')
             ]);

@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin\Profile;
 
 use App\Models\Profile;
+use App\Services\ProfileService;
 use Livewire\Component;
 use App\Livewire\Forms\ProfileForm;
 
@@ -18,16 +19,16 @@ class Edit extends Component
         }
     }
 
-    public function save()
+    public function save(ProfileService $profileService)
     {
         $data = $this->form->prepareData();
 
         try {
             if ($this->form->profile) {
-                $this->form->profile->update($data);
+                $profileService->update($this->form->profile, $data);
                 session()->flash('message', 'Profile updated successfully.');
             } else {
-                Profile::create($data);
+                $profileService->create($data);
                 session()->flash('message', 'Profile created successfully.');
                 return redirect()->route('admin.profile.index');
             }

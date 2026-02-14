@@ -50,11 +50,9 @@ class Index extends Component
         ])->layout('layouts.admin');
     }
 
-    public function delete($id)
+    public function delete(int $id, ProjectService $projectService): void
     {
-        $project = \App\Models\Project::find($id);
-        if ($project) {
-            $project->delete();
+        if ($projectService->delete($id)) {
             $this->dispatch('show-toast', [
                 'type' => 'success',
                 'message' => __('messages.item_deleted')

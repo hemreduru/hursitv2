@@ -144,6 +144,9 @@ return [
     'admin_no_projects' => 'No projects found.',
     'error_create_project' => 'An error occurred while creating the project.',
     'error_update_project' => 'An error occurred while updating the project.',
+    'api_server_error' => 'An unexpected server error occurred.',
+    'api_upload_success' => 'File uploaded successfully.',
+    'api_invalid_upload' => 'Invalid file upload.',
 
     'type_something' => 'Write something...'
 ];

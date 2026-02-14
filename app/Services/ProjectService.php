@@ -3,8 +3,12 @@
 namespace App\Services;
 
 use App\Repositories\Interfaces\ProjectRepositoryInterface;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class ProjectService
 {
@@ -37,6 +41,7 @@ class ProjectService
 
     public function paginate(int $perPage = 15, array $filters = [])
     {
+        /** @var Builder $query */
         $query = $this->projectRepository->getModel()::query();
 
         if (!empty($filters['search'])) {
@@ -55,28 +60,85 @@ class ProjectService
             $query->where('is_featured', $filters['featured']);
         }
 
-        if (!empty($filters['locale'])) {
-            $query->where('locale', $filters['locale']);
-        }
-
         return $query->latest()->paginate($perPage);
     }
 
     public function create(array $data)
     {
         try {
-            return $this->projectRepository->create($data);
-        } catch (\Exception $e) {
-            throw new \Exception(__('messages.error_create_project') . ' ' . $e->getMessage());
+            DB::beginTransaction();
+            $project = $this->projectRepository->create($data);
+            DB::commit();
+
+            Log::info('project.create.success', [
+                'project_id' => $project->id,
+                'is_featured' => $project->is_featured,
+            ]);
+
+            return $project;
+        } catch (Throwable $exception) {
+            DB::rollBack();
+
+            Log::error('project.create.failed', [
+                'error' => $exception->getMessage(),
+                'trace' => $exception->getTraceAsString(),
+                'title_en' => $data['title_en'] ?? null,
+                'title_tr' => $data['title_tr'] ?? null,
+            ]);
+
+            throw $exception;
         }
     }
 
     public function update(int $id, array $data)
     {
         try {
-            return $this->projectRepository->update($id, $data);
-        } catch (\Exception $e) {
-            throw new \Exception(__('messages.error_update_project') . ' ' . $e->getMessage());
+            DB::beginTransaction();
+            $updated = $this->projectRepository->update($id, $data);
+            DB::commit();
+
+            Log::info('project.update.success', [
+                'project_id' => $id,
+                'updated' => $updated,
+            ]);
+
+            return $updated;
+        } catch (Throwable $exception) {
+            DB::rollBack();
+
+            Log::error('project.update.failed', [
+                'project_id' => $id,
+                'error' => $exception->getMessage(),
+                'trace' => $exception->getTraceAsString(),
+            ]);
+
+            throw $exception;
+        }
+    }
+
+    public function delete(int $id): bool
+    {
+        try {
+            DB::beginTransaction();
+            $deleted = $this->projectRepository->delete($id);
+            DB::commit();
+
+            Log::info('project.delete.success', [
+                'project_id' => $id,
+                'deleted' => $deleted,
+            ]);
+
+            return $deleted;
+        } catch (Throwable $exception) {
+            DB::rollBack();
+
+            Log::error('project.delete.failed', [
+                'project_id' => $id,
+                'error' => $exception->getMessage(),
+                'trace' => $exception->getTraceAsString(),
+            ]);
+
+            throw $exception;
         }
     }
 }
