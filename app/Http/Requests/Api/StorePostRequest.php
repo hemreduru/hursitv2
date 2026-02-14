@@ -12,7 +12,7 @@ class StorePostRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true; // Auth is handled by route middleware
+        return (bool) $this->user()?->is_admin;
     }
 
     /**

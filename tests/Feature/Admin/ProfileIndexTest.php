@@ -8,7 +8,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 uses(DatabaseTransactions::class);
 
 test('admin can view profile index', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->admin()->create();
 
     $this->actingAs($user)
         ->get(route('admin.profile.index'))
@@ -16,7 +16,7 @@ test('admin can view profile index', function () {
 });
 
 test('profile index component renders', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->admin()->create();
     $this->actingAs($user);
 
     Livewire::test(Index::class)

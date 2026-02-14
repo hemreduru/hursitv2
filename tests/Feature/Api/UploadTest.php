@@ -13,7 +13,7 @@ test('api upload requires authentication', function () {
 
 test('authenticated user can upload an image', function () {
     Storage::fake('public');
-    $user = User::factory()->create();
+    $user = User::factory()->admin()->create();
     Sanctum::actingAs($user, ['*']);
 
     $file = UploadedFile::fake()->image('test-image.jpg');
@@ -35,7 +35,7 @@ test('authenticated user can upload an image', function () {
 });
 
 test('api upload validates image file', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->admin()->create();
     Sanctum::actingAs($user, ['*']);
 
     postJson('/api/upload', ['file' => 'not-a-file'])

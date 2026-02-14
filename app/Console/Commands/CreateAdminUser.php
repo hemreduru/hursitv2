@@ -60,6 +60,7 @@ class CreateAdminUser extends Command
             'email' => $email,
             'password' => \Illuminate\Support\Facades\Hash::make($password),
             'email_verified_at' => now(),
+            'is_admin' => true,
         ]);
 
         $this->info("Admin user [{$user->email}] created successfully!");

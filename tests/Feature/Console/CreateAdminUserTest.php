@@ -14,7 +14,9 @@ test('console can create admin user', function () {
         ->expectsOutput('Admin user [admin@test.com] created successfully!')
         ->assertExitCode(0);
 
-    expect(User::where('email', 'admin@test.com')->exists())->toBeTrue();
+    $user = User::where('email', 'admin@test.com')->first();
+    expect($user)->not->toBeNull();
+    expect($user->is_admin)->toBeTrue();
 });
 
 test('console warns if user exists', function () {
@@ -29,4 +31,14 @@ test('console warns if user exists', function () {
         ->expectsQuestion('Confirm Password', 'password123')
         ->expectsOutput('The email has already been taken.')
         ->assertExitCode(1);
+});
+
+test('console can promote existing user to admin', function () {
+    $user = User::factory()->create(['email' => 'promote@test.com', 'is_admin' => false]);
+
+    $this->artisan('app:promote-admin', ['email' => 'promote@test.com'])
+        ->expectsOutput('User promoted to admin: promote@test.com')
+        ->assertExitCode(0);
+
+    expect($user->fresh()->is_admin)->toBeTrue();
 });

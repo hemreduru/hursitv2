@@ -10,7 +10,7 @@ test('api requests require authentication', function () {
 });
 
 test('authenticated user can create a post', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->admin()->create();
     Sanctum::actingAs($user, ['*']);
 
     $data = [
@@ -42,7 +42,7 @@ test('authenticated user can create a post', function () {
 });
 
 test('api validates required fields', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->admin()->create();
     Sanctum::actingAs($user, ['*']);
 
     postJson('/api/posts', [])
@@ -51,7 +51,7 @@ test('api validates required fields', function () {
 });
 
 test('api respects provided slugs', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->admin()->create();
     Sanctum::actingAs($user, ['*']);
 
     $data = [
@@ -75,7 +75,7 @@ test('api respects provided slugs', function () {
 });
 
 test('api returns correct link', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->admin()->create();
     Sanctum::actingAs($user, ['*']);
 
     $data = [
@@ -96,7 +96,7 @@ test('api returns correct link', function () {
 });
 
 test('api creates new tags from strings', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->admin()->create();
     Sanctum::actingAs($user, ['*']);
 
     $data = [

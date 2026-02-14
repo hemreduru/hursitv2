@@ -50,6 +50,7 @@ Route::middleware([
     'auth:web',
     config('jetstream.auth_session'),
     'verified',
+    'admin',
     \App\Http\Middleware\SetLocale::class,
 ])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', AdminDashboard::class)->name('dashboard');

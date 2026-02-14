@@ -6,7 +6,7 @@ use Livewire\Livewire;
 use App\Livewire\Admin\Profile\Edit;
 
 beforeEach(function () {
-    $this->user = User::factory()->create();
+    $this->user = User::factory()->admin()->create();
     $this->actingAs($this->user);
 });
 

@@ -7,7 +7,7 @@ use App\Livewire\Admin\Projects\Index;
 use App\Livewire\Admin\Projects\Edit;
 
 beforeEach(function () {
-    $this->user = User::factory()->create();
+    $this->user = User::factory()->admin()->create();
     $this->actingAs($this->user);
 });
 
