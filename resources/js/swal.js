@@ -12,7 +12,7 @@ window.confirmAction = function(element, method, params = []) {
         text: text,
         icon: icon,
         showCancelButton: true,
-        confirmButtonColor: '#135bec', // Primary color
+        confirmButtonColor: '#135bec',
         cancelButtonColor: '#d33',
         confirmButtonText: confirmButtonText,
         cancelButtonText: cancelButtonText,
@@ -20,8 +20,6 @@ window.confirmAction = function(element, method, params = []) {
         color: document.documentElement.classList.contains('dark') ? '#ffffff' : '#0f172a',
     }).then((result) => {
         if (result.isConfirmed) {
-            // Check if it's a Livewire component call
-            // Try to find the component ID from the element or its parents
             let componentId = element.getAttribute('wire:id');
             if (!componentId) {
                 const parent = element.closest('[wire\\:id]');
@@ -30,30 +28,19 @@ window.confirmAction = function(element, method, params = []) {
                 }
             }
 
-            console.log('Swal Debug: Component ID found:', componentId);
-
             if (componentId && window.Livewire) {
                 const component = window.Livewire.find(componentId);
-                console.log('Swal Debug: Livewire Component found:', component);
 
                 if (component) {
-                    console.log('Swal Debug: Calling method:', method, 'with params:', params);
                     component.call(method, ...params);
-                } else {
-                    console.error('Livewire component instance not found for ID:', componentId);
                 }
             } else if (element.__livewire) {
-                 // Fallback for older Livewire versions or direct attachment
                 element.__livewire.call(method, ...params);
-            } else {
-                // Fallback for non-Livewire (if needed) or trigger custom event
-                 console.warn('Livewire component not found on element.');
             }
         }
     });
 };
 
-// Alternative: Listen for a global event if preferred
 window.addEventListener('swal:confirm', event => {
     Swal.fire({
         title: event.detail.title,
