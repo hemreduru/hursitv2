@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Post;
 use App\Repositories\Interfaces\PostRepositoryInterface;
 use App\Support\HtmlSanitizer;
 use Illuminate\Database\Eloquent\Builder;
@@ -26,6 +27,63 @@ class PostService
     public function getPublished(string $locale): Collection
     {
         return $this->postRepository->getPublished($locale);
+    }
+
+    public function getLatestPublishedExcept(int $excludePostId, int $limit = 6): Collection
+    {
+        return $this->postRepository->getModel()::query()
+            ->where('status', 'published')
+            ->where('id', '!=', $excludePostId)
+            ->orderByDesc('published_at')
+            ->orderByDesc('id')
+            ->limit($limit)
+            ->get();
+    }
+
+    public function getPreviousPublished(Post $post): ?Model
+    {
+        if (! $post->published_at) {
+            return null;
+        }
+
+        /** @var Builder $query */
+        $query = $this->postRepository->getModel()::query()
+            ->where('status', 'published')
+            ->where('id', '!=', $post->id)
+            ->where(function (Builder $builder) use ($post) {
+                $builder->where('published_at', '>', $post->published_at)
+                    ->orWhere(function (Builder $sameTimeBuilder) use ($post) {
+                        $sameTimeBuilder->where('published_at', $post->published_at)
+                            ->where('id', '>', $post->id);
+                    });
+            })
+            ->orderBy('published_at')
+            ->orderBy('id');
+
+        return $query->first();
+    }
+
+    public function getNextPublished(Post $post): ?Model
+    {
+        if (! $post->published_at) {
+            return null;
+        }
+
+        /** @var Builder $query */
+        $query = $this->postRepository->getModel()::query()
+            ->where('status', 'published')
+            ->where('id', '!=', $post->id)
+            ->where(function (Builder $builder) use ($post) {
+                $builder->where('published_at', '<', $post->published_at)
+                    ->orWhere(function (Builder $sameTimeBuilder) use ($post) {
+                        $sameTimeBuilder->where('published_at', $post->published_at)
+                            ->where('id', '<', $post->id);
+                    });
+            })
+            ->orderByDesc('published_at')
+            ->orderByDesc('id');
+
+        return $query->first();
     }
 
     public function paginate(int $perPage = 15)

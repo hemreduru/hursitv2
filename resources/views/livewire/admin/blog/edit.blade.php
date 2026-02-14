@@ -103,9 +103,9 @@
                     <input wire:model="form.published_at" type="datetime-local" class="w-full rounded-lg border-border-light dark:border-border-dark bg-white dark:bg-card-dark focus:ring-primary focus:border-primary transition-all">
                 </div>
 
-                <div class="space-y-4">
+                <div class="space-y-2">
                     <label class="block text-sm font-medium">{{ __('messages.admin_reading_time') }}</label>
-                    <input wire:model="form.reading_time" type="number" class="w-full rounded-lg border-border-light dark:border-border-dark bg-white dark:bg-card-dark focus:ring-primary focus:border-primary transition-all">
+                    <p class="text-sm text-slate-500 dark:text-slate-400">{{ __('messages.admin_reading_time_auto') }}</p>
                 </div>
 
 <!-- Removed shared tags input -->

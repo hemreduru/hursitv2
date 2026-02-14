@@ -23,7 +23,6 @@ class PostForm extends Form
     // Shared Fields
     public $status = 'draft';
     public $published_at = '';
-    public $reading_time = 5;
     public $selectedTagsEn = [];
     public $selectedTagsTr = [];
 
@@ -41,7 +40,6 @@ class PostForm extends Form
 
         $this->status = $post->status;
         $this->published_at = $post->published_at ? $post->published_at->format('Y-m-d\TH:i') : now()->format('Y-m-d\TH:i');
-        $this->reading_time = $post->reading_time;
 
         $this->selectedTagsEn = $post->tags->where('locale', 'en')->pluck('id')->toArray();
         $this->selectedTagsTr = $post->tags->where('locale', 'tr')->pluck('id')->toArray();
@@ -61,7 +59,6 @@ class PostForm extends Form
 
             'status' => 'required|in:draft,published',
             'published_at' => 'nullable|date',
-            'reading_time' => 'required|integer|min:1',
             'selectedTagsEn' => 'array',
             'selectedTagsTr' => 'array',
         ];
@@ -82,7 +79,6 @@ class PostForm extends Form
             'content_tr' => $this->content_tr,
             'status' => $this->status,
             'published_at' => $this->published_at,
-            'reading_time' => $this->reading_time,
             'tags' => array_merge($this->selectedTagsEn, $this->selectedTagsTr),
         ];
     }
