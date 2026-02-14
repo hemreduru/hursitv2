@@ -22,8 +22,8 @@
         <div class="space-y-4">
             <label class="block text-sm font-medium">{{ __('messages.admin_lang') }}</label>
             <select wire:model="locale" class="w-full rounded-lg border-border-light dark:border-border-dark bg-white dark:bg-card-dark">
-                <option value="en">English (EN)</option>
-                <option value="tr">Turkish (TR)</option>
+                <option value="en">{{ __('messages.language_en') }} (EN)</option>
+                <option value="tr">{{ __('messages.language_tr') }} (TR)</option>
             </select>
         </div>
 
@@ -36,6 +36,11 @@
          @if (session()->has('message'))
             <div class="p-4 bg-green-100 text-green-800 rounded-lg">
                 {{ session('message') }}
+            </div>
+        @endif
+        @if (session()->has('error'))
+            <div class="p-4 bg-red-100 text-red-800 rounded-lg">
+                {{ session('error') }}
             </div>
         @endif
     </form>

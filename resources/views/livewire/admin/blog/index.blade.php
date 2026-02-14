@@ -43,7 +43,7 @@
                             <td class="px-6 py-4 font-medium">{{ $post->title }}</td>
                             <td class="px-6 py-4">
                                 <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium {{ $post->status === 'published' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400' }}">
-                                    {{ ucfirst($post->status) }}
+                                    {{ $post->status === 'published' ? __('messages.status_published') : __('messages.status_draft') }}
                                 </span>
                             </td>
                             <td class="px-6 py-4 text-slate-500">{{ $post->published_at ? $post->published_at->format('M d, Y') : '-' }}</td>

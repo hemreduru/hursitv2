@@ -5,6 +5,7 @@ namespace App\Livewire\Admin\Blog;
 use App\Models\Post;
 use App\Models\Tag;
 use App\Services\PostService;
+use Throwable;
 use Livewire\Component;
 use App\Livewire\Forms\PostForm;
 
@@ -39,17 +40,15 @@ class Edit extends Component
         try {
             if ($this->form->post) {
                 $postService->update($this->form->post->id, $data);
-                session()->flash('message', 'Post updated successfully.');
+                session()->flash('message', __('messages.admin_post_updated'));
             } else {
                 $postService->create($data);
-                session()->flash('message', 'Post created successfully.');
+                session()->flash('message', __('messages.admin_post_created'));
                 return redirect()->route('admin.blog.index');
             }
-        } catch (\Exception $e) {
-             session()->flash('error', __('messages.error_create_project') . ': ' . $e->getMessage()); // Reusing generic error key or creating specific one?
-             // User removed error keys. I'll use simple string or general error.
-             // Actually user reverted changes. I'll assume keys might be missing.
-             session()->flash('error', 'Operation failed: ' . $e->getMessage());
+        } catch (Throwable $exception) {
+            report($exception);
+            session()->flash('error', __('messages.admin_operation_failed'));
         }
     }
 

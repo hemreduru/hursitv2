@@ -79,6 +79,8 @@ return [
     'admin_tags' => 'Tags',
     'admin_select_multiple' => 'Hold Ctrl/Cmd to select multiple.',
     'admin_save' => 'Save Post',
+    'admin_post_created' => 'Post created successfully.',
+    'admin_post_updated' => 'Post updated successfully.',
 
     // Projects
     'admin_project_management' => 'Project Management',
@@ -93,6 +95,8 @@ return [
     'admin_live_url' => 'Live URL',
     'admin_feature_homepage' => 'Feature this project on Homepage',
     'admin_save_project' => 'Save Project',
+    'admin_project_created' => 'Project created successfully.',
+    'admin_project_updated' => 'Project updated successfully.',
 
     // Tags
     'admin_tags_management' => 'Tags Management',
@@ -103,6 +107,8 @@ return [
     'admin_edit_tag' => 'Edit Tag',
     'admin_create_tag' => 'Create Tag',
     'admin_save_tag' => 'Save Tag',
+    'admin_tag_created' => 'Tag created successfully.',
+    'admin_tag_updated' => 'Tag updated successfully.',
 
     // Profile
     'admin_profile_settings' => 'Profile Settings',
@@ -115,6 +121,14 @@ return [
     'admin_bio' => 'Bio',
     'admin_social_links' => 'Social Links',
     'admin_save_profile' => 'Save Profile',
+    'admin_profile_created' => 'Profile created successfully.',
+    'admin_profile_updated' => 'Profile updated successfully.',
+    'admin_social_github_url' => 'Github URL',
+    'admin_social_linkedin_url' => 'LinkedIn URL',
+    'admin_social_twitter_url' => 'X / Twitter URL',
+    'admin_social_github_placeholder' => 'https://github.com/username',
+    'admin_social_linkedin_placeholder' => 'https://linkedin.com/in/username',
+    'admin_social_twitter_placeholder' => 'https://x.com/username',
 
     // Layout
     'admin_menu' => 'Menu',
@@ -126,6 +140,10 @@ return [
     'admin_badge' => 'Admin',
     'admin_live_site' => 'Live Site',
     'admin_profile_header' => 'Profile',
+    'admin_panel_title' => 'Admin Panel',
+    'theme_toggle_title' => 'Toggle Theme',
+    'language_en' => 'English',
+    'language_tr' => 'Turkish',
 
     // SweetAlert
     'are_you_sure' => 'Are you sure?',
@@ -144,9 +162,12 @@ return [
     'admin_no_projects' => 'No projects found.',
     'error_create_project' => 'An error occurred while creating the project.',
     'error_update_project' => 'An error occurred while updating the project.',
+    'admin_operation_failed' => 'Operation failed. Please check logs for details.',
     'api_server_error' => 'An unexpected server error occurred.',
+    'api_post_created' => 'Post created successfully.',
     'api_upload_success' => 'File uploaded successfully.',
     'api_invalid_upload' => 'Invalid file upload.',
 
-    'type_something' => 'Write something...'
+    'type_something' => 'Write something...',
+    'select_placeholder' => 'Select...',
 ];

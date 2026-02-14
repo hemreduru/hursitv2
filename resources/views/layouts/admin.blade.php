@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>Admin Panel - {{ config('app.name') }}</title>
+    <title>{{ __('messages.admin_panel_title') }} - {{ config('app.name') }}</title>
     <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
@@ -49,7 +49,7 @@
                         <a href="{{ route('set-locale', 'en') }}" class="px-2 py-1 rounded text-xs font-bold transition-all {{ app()->getLocale() === 'en' ? 'bg-white dark:bg-slate-600 shadow-sm text-slate-900 dark:text-white' : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white' }}">EN</a>
                         <a href="{{ route('set-locale', 'tr') }}" class="px-2 py-1 rounded text-xs font-bold transition-all {{ app()->getLocale() === 'tr' ? 'bg-white dark:bg-slate-600 shadow-sm text-slate-900 dark:text-white' : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white' }}">TR</a>
                     </div>
-                    <button class="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-lg transition-colors" title="Toggle Theme" onclick="toggleTheme()">
+                    <button class="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-lg transition-colors" title="{{ __('messages.theme_toggle_title') }}" onclick="toggleTheme()">
                         <span class="material-symbols-outlined hidden dark:block text-xl">light_mode</span>
                         <span class="material-symbols-outlined block dark:hidden text-xl">dark_mode</span>
                     </button>

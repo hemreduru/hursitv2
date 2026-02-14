@@ -1,4 +1,4 @@
-@props(['placeholder' => 'Select...', 'multiple' => false, 'label' => '', 'id' => null])
+@props(['placeholder' => __('messages.select_placeholder'), 'multiple' => false, 'label' => '', 'id' => null])
 
 <div
     x-data="{

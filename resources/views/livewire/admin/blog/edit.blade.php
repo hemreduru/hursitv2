@@ -11,10 +11,10 @@
         <!-- Language Tabs -->
         <div class="flex gap-2 border-b border-border-light dark:border-border-dark pb-4 overflow-x-auto">
             <button type="button" @click="lang = 'tr'" :class="lang === 'tr' ? 'bg-primary/10 text-primary border-primary ring-1 ring-primary' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white border-transparent hover:bg-slate-100 dark:hover:bg-slate-800'" class="px-4 py-2 rounded-lg font-bold text-sm border transition-all flex items-center gap-2">
-                <span class="text-lg">🇹🇷</span> Türkçe
+                <span class="text-lg">TR</span> {{ __('messages.language_tr') }}
             </button>
             <button type="button" @click="lang = 'en'" :class="lang === 'en' ? 'bg-primary/10 text-primary border-primary ring-1 ring-primary' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white border-transparent hover:bg-slate-100 dark:hover:bg-slate-800'" class="px-4 py-2 rounded-lg font-bold text-sm border transition-all flex items-center gap-2">
-                <span class="text-lg">🇬🇧</span> English
+                <span class="text-lg">EN</span> {{ __('messages.language_en') }}
             </button>
         </div>
 
@@ -92,8 +92,8 @@
                 <div class="space-y-4">
                     <label class="block text-sm font-medium">{{ __('messages.admin_status') }}</label>
                     <select wire:model="form.status" class="w-full rounded-lg border-border-light dark:border-border-dark bg-white dark:bg-card-dark focus:ring-primary focus:border-primary transition-all">
-                        <option value="draft">Draft</option>
-                        <option value="published">Published</option>
+                        <option value="draft">{{ __('messages.status_draft') }}</option>
+                        <option value="published">{{ __('messages.status_published') }}</option>
                     </select>
                 </div>
 
@@ -104,7 +104,7 @@
                 </div>
 
                 <div class="space-y-4">
-                    <label class="block text-sm font-medium">{{ __('messages.admin_reading_time') }} (min)</label>
+                    <label class="block text-sm font-medium">{{ __('messages.admin_reading_time') }}</label>
                     <input wire:model="form.reading_time" type="number" class="w-full rounded-lg border-border-light dark:border-border-dark bg-white dark:bg-card-dark focus:ring-primary focus:border-primary transition-all">
                 </div>
 
@@ -122,6 +122,11 @@
         @if (session()->has('message'))
             <div class="p-4 bg-green-100 text-green-800 rounded-lg">
                 {{ session('message') }}
+            </div>
+        @endif
+        @if (session()->has('error'))
+            <div class="p-4 bg-red-100 text-red-800 rounded-lg">
+                {{ session('error') }}
             </div>
         @endif
     </form>

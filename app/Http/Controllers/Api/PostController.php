@@ -27,7 +27,7 @@ class PostController extends Controller
             $post = $this->postService->create($validated);
 
             return response()->json([
-                'message' => 'Post created successfully',
+                'message' => __('messages.api_post_created'),
                 'id' => $post->id,
                 'link' => route('blog.show', $post->slug_en),
                 'links' => [

@@ -1,4 +1,4 @@
-@props(['id', 'label' => null, 'placeholder' => 'Write something...'])
+@props(['id', 'label' => null, 'placeholder' => __('messages.type_something')])
 
 <div wire:ignore>
     @if($label)
