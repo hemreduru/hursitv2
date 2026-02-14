@@ -5,7 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\StorePostRequest;
 use App\Services\PostService;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class PostController extends Controller
 {
@@ -21,23 +22,28 @@ class PostController extends Controller
         try {
             $validated = $request->validated();
 
-
             $validated['published_at'] = ($validated['status'] ?? 'draft') === 'published' ? now() : null;
 
-            // Create post
             $post = $this->postService->create($validated);
 
             return response()->json([
-                'message' => 'Post created successfully',
+                'message' => __('messages.api_post_created'),
                 'id' => $post->id,
                 'link' => route('blog.show', $post->slug_en),
                 'links' => [
                     'en' => route('blog.show', $post->slug_en),
                 ]
             ], 201);
+        } catch (Throwable $exception) {
+            Log::error('api.post.store.failed', [
+                'error' => $exception->getMessage(),
+                'trace' => $exception->getTraceAsString(),
+                'user_id' => $request->user()?->id,
+            ]);
 
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Server Error: ' . $e->getMessage()], 500);
+            return response()->json([
+                'message' => __('messages.api_server_error'),
+            ], 500);
         }
     }
 }

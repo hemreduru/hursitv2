@@ -3,6 +3,8 @@
 namespace App\Livewire\Admin\Profile;
 
 use App\Models\Profile;
+use App\Services\ProfileService;
+use Throwable;
 use Livewire\Component;
 use App\Livewire\Forms\ProfileForm;
 
@@ -18,21 +20,22 @@ class Edit extends Component
         }
     }
 
-    public function save()
+    public function save(ProfileService $profileService)
     {
         $data = $this->form->prepareData();
 
         try {
             if ($this->form->profile) {
-                $this->form->profile->update($data);
-                session()->flash('message', 'Profile updated successfully.');
+                $profileService->update($this->form->profile, $data);
+                session()->flash('message', __('messages.admin_profile_updated'));
             } else {
-                Profile::create($data);
-                session()->flash('message', 'Profile created successfully.');
+                $profileService->create($data);
+                session()->flash('message', __('messages.admin_profile_created'));
                 return redirect()->route('admin.profile.index');
             }
-        } catch (\Exception $e) {
-            session()->flash('error', 'Operation failed: ' . $e->getMessage());
+        } catch (Throwable $exception) {
+            report($exception);
+            session()->flash('error', __('messages.admin_operation_failed'));
         }
     }
 

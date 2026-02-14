@@ -12,12 +12,10 @@ class Index extends Component
 
     public $search = '';
     public $status = '';
-    public $locale = '';
 
     protected $queryString = [
         'search' => ['except' => ''],
         'status' => ['except' => ''],
-        'locale' => ['except' => ''],
     ];
 
     public function updatedSearch()
@@ -30,17 +28,11 @@ class Index extends Component
         $this->resetPage();
     }
 
-    public function updatedLocale()
-    {
-        $this->resetPage();
-    }
-
     public function render(PostService $postService)
     {
         $filters = [
             'search' => $this->search,
             'status' => $this->status,
-            'locale' => $this->locale,
         ];
 
         $posts = $postService->getAllForAdmin(10, $filters);
@@ -50,12 +42,10 @@ class Index extends Component
         ])->layout('layouts.admin');
     }
 
-    public function delete($id)
+    public function delete(int $id, PostService $postService): void
     {
-        $post = \App\Models\Post::find($id);
-        if ($post) {
-            $post->delete();
-             $this->dispatch('show-toast', [
+        if ($postService->delete($id)) {
+            $this->dispatch('show-toast', [
                 'type' => 'success',
                 'message' => __('messages.item_deleted')
             ]);

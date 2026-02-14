@@ -12,12 +12,10 @@ class Index extends Component
 
     public $search = '';
     public $featured = '';
-    public $locale = '';
 
     protected $queryString = [
         'search' => ['except' => ''],
         'featured' => ['except' => ''],
-        'locale' => ['except' => ''],
     ];
 
     public function updatedSearch()
@@ -30,17 +28,11 @@ class Index extends Component
         $this->resetPage();
     }
 
-    public function updatedLocale()
-    {
-        $this->resetPage();
-    }
-
     public function render(ProjectService $projectService)
     {
         $filters = [
             'search' => $this->search,
             'featured' => $this->featured,
-            'locale' => $this->locale,
         ];
 
         $projects = $projectService->paginate(10, $filters);
@@ -50,11 +42,9 @@ class Index extends Component
         ])->layout('layouts.admin');
     }
 
-    public function delete($id)
+    public function delete(int $id, ProjectService $projectService): void
     {
-        $project = \App\Models\Project::find($id);
-        if ($project) {
-            $project->delete();
+        if ($projectService->delete($id)) {
             $this->dispatch('show-toast', [
                 'type' => 'success',
                 'message' => __('messages.item_deleted')

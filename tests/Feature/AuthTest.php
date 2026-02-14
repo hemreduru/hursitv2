@@ -19,7 +19,7 @@ test('users can authenticate', function () {
         'email' => $user->email,
         'password' => 'password', // Default factory password
         'g-recaptcha-response' => 'test-token',
-    ])->assertRedirect('/dashboard');
+    ])->assertRedirect('/admin/dashboard');
 
     $this->assertAuthenticated();
 });

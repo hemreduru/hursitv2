@@ -3,16 +3,24 @@
 namespace App\Services;
 
 use App\Repositories\Interfaces\PostRepositoryInterface;
+use App\Support\HtmlSanitizer;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
+use Throwable;
 
 class PostService
 {
     protected PostRepositoryInterface $postRepository;
+    protected HtmlSanitizer $htmlSanitizer;
 
-    public function __construct(PostRepositoryInterface $postRepository)
+    public function __construct(PostRepositoryInterface $postRepository, HtmlSanitizer $htmlSanitizer)
     {
         $this->postRepository = $postRepository;
+        $this->htmlSanitizer = $htmlSanitizer;
     }
 
     public function getPublished(string $locale): Collection
@@ -27,29 +35,114 @@ class PostService
 
     public function create(array $data)
     {
-        $tags = $data['tags'] ?? [];
-        unset($data['tags']);
+        DB::beginTransaction();
 
-        $post = $this->postRepository->create($data);
+        try {
+            $data = $this->sanitizeLocalizedContent($data);
+            $tags = $data['tags'] ?? [];
+            unset($data['tags']);
 
-        $this->syncTags($post, $tags);
+            $post = $this->postRepository->create($data);
+            $this->syncTags($post, $tags);
 
-        return $post;
+            DB::commit();
+
+            Log::info('post.create.success', [
+                'post_id' => $post->id,
+                'status' => $post->status,
+                'tags_count' => count($tags),
+            ]);
+
+            return $post;
+        } catch (Throwable $exception) {
+            DB::rollBack();
+
+            Log::error('post.create.failed', [
+                'error' => $exception->getMessage(),
+                'trace' => $exception->getTraceAsString(),
+                'title_en' => $data['title_en'] ?? null,
+                'title_tr' => $data['title_tr'] ?? null,
+            ]);
+
+            throw $exception;
+        }
     }
 
     public function update(int $id, array $data)
     {
-        $tags = $data['tags'] ?? [];
-        unset($data['tags']);
+        DB::beginTransaction();
 
-        $updated = $this->postRepository->update($id, $data);
+        try {
+            $data = $this->sanitizeLocalizedContent($data);
+            $tags = $data['tags'] ?? [];
+            unset($data['tags']);
 
-        if ($updated && !empty($tags)) {
-            $post = $this->postRepository->find($id);
-            $this->syncTags($post, $tags);
+            $updated = $this->postRepository->update($id, $data);
+
+            if ($updated) {
+                $post = $this->postRepository->find($id);
+                if ($post) {
+                    $this->syncTags($post, $tags);
+                }
+            }
+
+            DB::commit();
+
+            Log::info('post.update.success', [
+                'post_id' => $id,
+                'updated' => $updated,
+                'tags_count' => count($tags),
+            ]);
+
+            return $updated;
+        } catch (Throwable $exception) {
+            DB::rollBack();
+
+            Log::error('post.update.failed', [
+                'post_id' => $id,
+                'error' => $exception->getMessage(),
+                'trace' => $exception->getTraceAsString(),
+            ]);
+
+            throw $exception;
         }
+    }
 
-        return $updated;
+    public function delete(int $id): bool
+    {
+        DB::beginTransaction();
+
+        try {
+            $post = $this->postRepository->find($id);
+
+            if (! $post) {
+                DB::commit();
+                Log::warning('post.delete.not_found', ['post_id' => $id]);
+                return false;
+            }
+
+            $post->tags()->detach();
+            $deleted = $this->postRepository->delete($id);
+
+            DB::commit();
+
+            Log::info('post.delete.success', [
+                'post_id' => $id,
+                'deleted' => $deleted,
+            ]);
+
+            return $deleted;
+        } catch (Throwable $exception) {
+            DB::rollBack();
+
+            Log::error('post.delete.failed', [
+                'post_id' => $id,
+                'error' => $exception->getMessage(),
+                'trace' => $exception->getTraceAsString(),
+            ]);
+
+            throw $exception;
+        }
     }
 
     public function getBySlug(string $slug, string $locale): ?Model
@@ -64,6 +157,7 @@ class PostService
 
     public function getAllForAdmin($perPage = 20, array $filters = [])
     {
+        /** @var Builder $query */
         $query = $this->postRepository->getModel()::query();
 
         if (!empty($filters['search'])) {
@@ -84,6 +178,7 @@ class PostService
     }
     public function getPublishedWithFilters(string $locale, int $perPage = 15, array $filters = [])
     {
+        /** @var Builder $query */
         $query = $this->postRepository->getModel()::query()
             ->where('status', 'published');
 
@@ -120,7 +215,7 @@ class PostService
                 $tagModel = \App\Models\Tag::firstOrCreate(
                     ['name' => $tag],
                     [
-                        'slug' => \Illuminate\Support\Str::slug($tag),
+                        'slug' => Str::slug($tag),
                         'locale' => app()->getLocale(),
                     ]
                 );
@@ -129,5 +224,16 @@ class PostService
         }
 
         $post->tags()->sync($tagIds);
+    }
+
+    protected function sanitizeLocalizedContent(array $data): array
+    {
+        foreach (['content_en', 'content_tr'] as $field) {
+            if (array_key_exists($field, $data)) {
+                $data[$field] = $this->htmlSanitizer->sanitizePost($data[$field]);
+            }
+        }
+
+        return $data;
     }
 }

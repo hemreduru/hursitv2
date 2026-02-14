@@ -41,7 +41,7 @@
                 x-data
                 @click="document.documentElement.classList.toggle('dark'); localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light')"
                 class="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-lg transition-colors"
-                title="Toggle Theme"
+                title="{{ __('messages.theme_toggle_title') }}"
             >
                 <span class="material-symbols-outlined hidden dark:block text-xl">light_mode</span>
                 <span class="material-symbols-outlined block dark:hidden text-xl">dark_mode</span>

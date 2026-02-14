@@ -21,7 +21,7 @@
              <div class="p-6 bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark rounded-xl">
                  <h3 class="font-bold text-lg mb-2">{{ __('messages.admin_profile_header') }}</h3>
                  <p class="text-slate-500 text-sm">{{ __('messages.admin_profile_manage') }}</p>
-                 <a href="#" class="text-primary text-sm font-bold mt-4 inline-block hover:underline">{{ __('messages.admin_edit_profile') }} &rarr;</a>
+                 <a href="{{ route('admin.profile.index') }}" class="text-primary text-sm font-bold mt-4 inline-block hover:underline">{{ __('messages.admin_edit_profile') }} &rarr;</a>
             </div>
         </div>
     </section>

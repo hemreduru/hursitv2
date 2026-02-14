@@ -1,13 +1,11 @@
-@props(['placeholder' => 'Select...', 'multiple' => false, 'label' => '', 'id' => null])
+@props(['placeholder' => __('messages.select_placeholder'), 'multiple' => false, 'label' => '', 'id' => null])
 
 <div
     x-data="{
         model: @entangle($attributes->wire('model')),
         initSelect2() {
             let check = setInterval(() => {
-                console.log('Checking for jQuery/Select2...', !!window.jQuery, !!(window.jQuery && window.jQuery.fn.select2));
                 if (window.jQuery && window.jQuery(this.$refs.select).select2) {
-                    console.log('Select2 found, initializing...');
                     clearInterval(check);
                     let el = $(this.$refs.select);
                     el.select2({

@@ -2,6 +2,7 @@
 
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\Sanctum;
 use function Pest\Laravel\{postJson};
@@ -12,8 +13,9 @@ test('api upload requires authentication', function () {
 });
 
 test('authenticated user can upload an image', function () {
+    Config::set('filesystems.uploads_disk', 'public');
     Storage::fake('public');
-    $user = User::factory()->create();
+    $user = User::factory()->admin()->create();
     Sanctum::actingAs($user, ['*']);
 
     $file = UploadedFile::fake()->image('test-image.jpg');
@@ -34,8 +36,36 @@ test('authenticated user can upload an image', function () {
     Storage::disk('public')->assertExists($path);
 });
 
+test('api upload stores files on configured disk', function () {
+    Config::set('filesystems.uploads_disk', 'public');
+    Storage::fake('public');
+
+    $user = User::factory()->admin()->create();
+    Sanctum::actingAs($user, ['*']);
+
+    $response = postJson('/api/upload', [
+        'file' => UploadedFile::fake()->image('public-image.jpg'),
+    ])->assertStatus(201);
+
+    Storage::disk('public')->assertExists($response->json('path'));
+});
+
+test('api upload falls back to public disk when configured disk is invalid', function () {
+    Config::set('filesystems.uploads_disk', 'invalid-disk');
+    Storage::fake('public');
+
+    $user = User::factory()->admin()->create();
+    Sanctum::actingAs($user, ['*']);
+
+    $response = postJson('/api/upload', [
+        'file' => UploadedFile::fake()->image('fallback-image.jpg'),
+    ])->assertStatus(201);
+
+    Storage::disk('public')->assertExists($response->json('path'));
+});
+
 test('api upload validates image file', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->admin()->create();
     Sanctum::actingAs($user, ['*']);
 
     postJson('/api/upload', ['file' => 'not-a-file'])

@@ -4,6 +4,7 @@ namespace App\Livewire\Admin\Projects;
 
 use App\Models\Project;
 use App\Services\ProjectService;
+use Throwable;
 use Livewire\Component;
 
 class Edit extends Component
@@ -34,14 +35,15 @@ class Edit extends Component
 
             if ($this->form->project) {
                 $projectService->update($this->form->project->id, $data);
-                session()->flash('message', 'Project updated successfully.');
+                session()->flash('message', __('messages.admin_project_updated'));
             } else {
                 $projectService->create($data);
-                session()->flash('message', 'Project created successfully.');
+                session()->flash('message', __('messages.admin_project_created'));
                 return redirect()->route('admin.projects.index');
             }
-        } catch (\Exception $e) {
-            session()->flash('error', $e->getMessage());
+        } catch (Throwable $exception) {
+            report($exception);
+            session()->flash('error', __('messages.admin_operation_failed'));
         }
     }
 

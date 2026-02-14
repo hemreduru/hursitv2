@@ -3,36 +3,39 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\ValidationException;
+use App\Http\Requests\Api\StoreUploadRequest;
+use App\Services\UploadStorageService;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class UploadController extends Controller
 {
-    public function store(Request $request)
+    public function __construct(protected UploadStorageService $uploadStorageService) {}
+
+    public function store(StoreUploadRequest $request)
     {
         try {
-            $request->validate([
-                'file' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048', // Max 2MB
-            ]);
-
-            if ($request->file('file')->isValid()) {
-                $path = $request->file('file')->store('uploads', 'public');
-                $url = Storage::url($path);
-
-                return response()->json([
-                    'message' => 'File uploaded successfully',
-                    'path' => $path,
-                    'url' => asset($url), // Full URL
-                ], 201);
+            if (! $request->file('file')->isValid()) {
+                return response()->json(['message' => __('messages.api_invalid_upload')], 400);
             }
 
-            return response()->json(['message' => 'Invalid file upload'], 400);
+            $uploaded = $this->uploadStorageService->storeImage($request->file('file'));
 
-        } catch (ValidationException $e) {
-            return response()->json(['errors' => $e->errors()], 422);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Upload failed: ' . $e->getMessage()], 500);
+            return response()->json([
+                'message' => __('messages.api_upload_success'),
+                'path' => $uploaded['path'],
+                'url' => $uploaded['url'],
+            ], 201);
+        } catch (Throwable $exception) {
+            Log::error('api.upload.store.failed', [
+                'error' => $exception->getMessage(),
+                'trace' => $exception->getTraceAsString(),
+                'user_id' => $request->user()?->id,
+            ]);
+
+            return response()->json([
+                'message' => __('messages.api_server_error'),
+            ], 500);
         }
     }
 }
