@@ -24,4 +24,4 @@ yarn-error.log
 /bootstrap/compiled.php
 /app/storage/
 /.vagrant
-
+/docs
