@@ -171,6 +171,7 @@ return [
     'admin_operation_failed' => 'Operation failed. Please check logs for details.',
     'api_server_error' => 'An unexpected server error occurred.',
     'api_post_created' => 'Post created successfully.',
+    'api_duplicate_post' => 'Potential duplicate content detected.',
     'api_upload_success' => 'File uploaded successfully.',
     'api_invalid_upload' => 'Invalid file upload.',
 

@@ -171,6 +171,7 @@ return [
     'admin_operation_failed' => 'Islem basarisiz oldu. Ayrintilar icin loglari kontrol edin.',
     'api_server_error' => 'Beklenmeyen bir sunucu hatasi olustu.',
     'api_post_created' => 'Yazi basariyla olusturuldu.',
+    'api_duplicate_post' => 'Olası yinelenen icerik algilandi.',
     'api_upload_success' => 'Dosya basariyla yuklendi.',
     'api_invalid_upload' => 'Gecersiz dosya yukleme.',
 

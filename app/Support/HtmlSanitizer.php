@@ -52,7 +52,7 @@ class HtmlSanitizer
         $config->set('Cache.SerializerPath', $cachePath);
         $config->set(
             'HTML.Allowed',
-            'p,br,ul,ol,li,strong,b,em,i,u,s,blockquote,pre,code,h1,h2,h3,h4,h5,h6,a[href|title|target|rel],span'
+            'p,br,ul,ol,li,strong,b,em,i,u,s,blockquote,pre,code,h1,h2,h3,h4,h5,h6,a[href|title|target|rel],span,img[src|alt|title|loading|width|height]'
         );
         $config->set('HTML.ForbiddenElements', [
             'script',
@@ -76,6 +76,9 @@ class HtmlSanitizer
         ]);
         $config->set('Attr.AllowedFrameTargets', ['_blank']);
         $config->set('HTML.Nofollow', true);
+
+        $definition = $config->getHTMLDefinition(true);
+        $definition->addAttribute('img', 'loading', 'Enum#lazy,eager,auto');
 
         // Profile hook for future content-specific policies.
         if ($profile === 'post' || $profile === 'project') {

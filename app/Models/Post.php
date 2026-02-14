@@ -21,6 +21,8 @@ class Post extends Model
         'published_at',
         'reading_time',
         'thumbnail',
+        'source_url',
+        'source_hash',
     ];
 
     protected $casts = [
@@ -29,22 +31,22 @@ class Post extends Model
 
     public function getTitleAttribute()
     {
-        return $this->attributes['title_' . app()->getLocale()] ?? $this->attributes['title_en'] ?? null;
+        return $this->attributes['title_'.app()->getLocale()] ?? $this->attributes['title_en'] ?? null;
     }
 
     public function getSlugAttribute()
     {
-        return $this->attributes['slug_' . app()->getLocale()] ?? $this->attributes['slug_en'] ?? null;
+        return $this->attributes['slug_'.app()->getLocale()] ?? $this->attributes['slug_en'] ?? null;
     }
 
     public function getShortDescriptionAttribute()
     {
-        return $this->attributes['short_description_' . app()->getLocale()] ?? $this->attributes['short_description_en'] ?? null;
+        return $this->attributes['short_description_'.app()->getLocale()] ?? $this->attributes['short_description_en'] ?? null;
     }
 
     public function getContentAttribute()
     {
-        return $this->attributes['content_' . app()->getLocale()] ?? $this->attributes['content_en'] ?? null;
+        return $this->attributes['content_'.app()->getLocale()] ?? $this->attributes['content_en'] ?? null;
     }
 
     public function getReadingTimeAttribute($value): int

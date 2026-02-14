@@ -6,10 +6,10 @@ test('html sanitizer strips risky tags and attributes', function () {
     $sanitizer = app(HtmlSanitizer::class);
 
     $payload = '<p onclick="alert(1)">safe</p>'
-        . '<script>window.badToken = "script-token";</script>'
-        . '<a href="javascript:alert(\'js-token\')">bad-link</a>'
-        . '<iframe src="https://evil.test/frame"></iframe>'
-        . '<object data="https://evil.test/object"></object>';
+        .'<script>window.badToken = "script-token";</script>'
+        .'<a href="javascript:alert(\'js-token\')">bad-link</a>'
+        .'<iframe src="https://evil.test/frame"></iframe>'
+        .'<object data="https://evil.test/object"></object>';
 
     $sanitized = $sanitizer->sanitizePost($payload);
 
@@ -25,10 +25,15 @@ test('html sanitizer strips risky tags and attributes', function () {
 test('html sanitizer keeps allowed markup', function () {
     $sanitizer = app(HtmlSanitizer::class);
 
-    $payload = '<p><strong>bold</strong> and <em>italic</em></p>';
+    $payload = '<p><strong>bold</strong> and <em>italic</em></p>'
+        .'<img src="https://example.com/image.webp" alt="cover" loading="lazy" onerror="alert(1)">';
     $sanitized = $sanitizer->sanitizeProject($payload);
 
     expect($sanitized)->toContain('<p>')
         ->toContain('<strong>bold</strong>')
-        ->toContain('<em>italic</em>');
+        ->toContain('<em>italic</em>')
+        ->toContain('<img')
+        ->toContain('src="https://example.com/image.webp"')
+        ->toContain('loading="lazy"')
+        ->not->toContain('onerror');
 });

@@ -1,0 +1,762 @@
+{
+  "name": "hursit-automation-v2",
+  "nodes": [
+    {
+      "id": "cron-weekly",
+      "name": "Cron Weekly",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {}
+          ]
+        }
+      }
+    },
+    {
+      "id": "rss-links",
+      "name": "RSS Links",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        0
+      ],
+      "parameters": {
+        "jsCode": "return [\n  { json: { url: \"https://feed.laravel-news.com/\" } },\n  { json: { url: \"https://dev.to/feed/tag/devops\" } }\n];"
+      }
+    },
+    {
+      "id": "rss-to-json",
+      "name": "RSS to JSON",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        440,
+        0
+      ],
+      "parameters": {
+        "url": "https://api.rss2json.com/v1/api.json",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "rss_url",
+              "value": "={{ $json.url }}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "merge-rss-data",
+      "name": "Merge RSS Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        660,
+        0
+      ],
+      "parameters": {
+        "jsCode": "let news = \"\";\nitems.forEach(i => {\n  (i.json.items || []).slice(0,5).forEach(p => {\n    const clean = (p.description || '').replace(/<[^>]+>/g,'').substring(0,300);\n    news += `--- NEWS ITEM ---\\nTitle: ${p.title}\\nLink: ${p.link}\\nSummary: ${clean}\\n\\n`;\n  });\n});\nreturn [{ json: { news_context: news || 'No news found' } }];"
+      }
+    },
+    {
+      "id": "gemini-selector",
+      "name": "Gemini - Selector",
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        900,
+        0
+      ],
+      "parameters": {
+        "modelId": "models/gemini-flash-latest",
+        "messages": {
+          "values": [
+            {
+              "content": "=Select ONLY ONE most important Laravel or DevOps news from below and return raw JSON.\n\n{{ $json.news_context }}\n\nFormat:\n{ \"topic\":\"\", \"category\":\"\", \"source_link\":\"\", \"original_summary\":\"\" }"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "parse-selector-json",
+      "name": "Parse Selector JSON",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const raw = $json?.content?.parts?.[0]?.text || '';\nconst cleaned = raw.replace(/```json/gi, '').replace(/```/g, '').trim();\nreturn [{ json: JSON.parse(cleaned) }];"
+      }
+    },
+    {
+      "id": "get-dedupe-context",
+      "name": "Get Dedupe Context",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1360,
+        0
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "https://www.hursit.me/api/automation/dedupe-context",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpBearerAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "days",
+              "value": "180"
+            },
+            {
+              "name": "limit",
+              "value": "100"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "gemini-duplicate-judge",
+      "name": "Gemini - Duplicate Judge",
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        1580,
+        0
+      ],
+      "parameters": {
+        "modelId": "models/gemini-flash-latest",
+        "messages": {
+          "values": [
+            {
+              "content": "=Given candidate topic and published history, decide duplicate risk. Return JSON only.\nCandidate Topic: {{ $node['Parse Selector JSON'].json.topic }}\nCandidate Source: {{ $node['Parse Selector JSON'].json.source_link }}\nHistory: {{ JSON.stringify($json.items || []) }}\nOutput:\n{ \"is_duplicate\": false, \"score\": 0.0, \"matched_post_id\": null, \"reason\": \"\" }"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "parse-duplicate-json",
+      "name": "Parse Duplicate JSON",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1800,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const raw = $json?.content?.parts?.[0]?.text || '';\nconst cleaned = raw.replace(/```json/gi, '').replace(/```/g, '').trim();\nconst parsed = JSON.parse(cleaned);\nreturn [{ json: parsed }];"
+      }
+    },
+    {
+      "id": "if-duplicate",
+      "name": "IF Duplicate >= 0.78",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        2020,
+        0
+      ],
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.is_duplicate === true && Number($json.score || 0) >= 0.78 }}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "telegram-duplicate-skip",
+      "name": "Telegram Duplicate Skip",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2240,
+        -120
+      ],
+      "parameters": {
+        "chatId": "5679822050",
+        "text": "=⏭️ Duplicate skipped. score={{ $json.score }} reason={{ $json.reason }}"
+      }
+    },
+    {
+      "id": "get-taxonomy",
+      "name": "Get Taxonomy",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        2240,
+        140
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "https://www.hursit.me/api/automation/taxonomy",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpBearerAuth"
+      }
+    },
+    {
+      "id": "gemini-category-selector",
+      "name": "Gemini - Category Selector",
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        2460,
+        140
+      ],
+      "parameters": {
+        "modelId": "models/gemini-flash-latest",
+        "messages": {
+          "values": [
+            {
+              "content": "=Choose only from taxonomy slugs.\nTopic: {{ $node['Parse Selector JSON'].json.topic }}\nSummary: {{ $node['Parse Selector JSON'].json.original_summary }}\nTaxonomy: {{ JSON.stringify($json) }}\nOutput JSON:\n{ \"primary_category_slug\":\"\", \"secondary_tag_slugs\":[] }"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "validate-category-json",
+      "name": "Validate Category JSON",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2680,
+        140
+      ],
+      "parameters": {
+        "jsCode": "const raw = $json?.content?.parts?.[0]?.text || '';\nconst cleaned = raw.replace(/```json/gi, '').replace(/```/g, '').trim();\nconst parsed = JSON.parse(cleaned);\nif (!parsed.primary_category_slug) throw new Error('primary_category_slug missing');\nif (!Array.isArray(parsed.secondary_tag_slugs)) parsed.secondary_tag_slugs = [];\nparsed.secondary_tag_slugs = parsed.secondary_tag_slugs.slice(0,2);\nreturn [{ json: parsed }];"
+      }
+    },
+    {
+      "id": "gemini-writer",
+      "name": "Gemini - Writer",
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        2900,
+        140
+      ],
+      "parameters": {
+        "modelId": "models/gemini-pro-latest",
+        "messages": {
+          "values": [
+            {
+              "content": "=Write a 600-700 word technical HTML fragment.\nTopic: {{ $node['Parse Selector JSON'].json.topic }}\nSource Summary: {{ $node['Parse Selector JSON'].json.original_summary }}\nSource Link: {{ $node['Parse Selector JSON'].json.source_link }}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "gemini-translator",
+      "name": "Gemini - Translator",
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        3120,
+        140
+      ],
+      "parameters": {
+        "modelId": "models/gemini-flash-latest",
+        "messages": {
+          "values": [
+            {
+              "content": "=Translate to Turkish. Keep HTML structure exactly.\n{{ $json.content?.parts?.[0]?.text || $json.text }}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "extract-headings",
+      "name": "Extract First 2 Headings",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3340,
+        140
+      ],
+      "parameters": {
+        "jsCode": "const html = $node['Gemini - Writer'].json.content.parts[0].text;\nconst matches = [...html.matchAll(/<h2[^>]*>(.*?)<\\/h2>/gi)].map(m => m[1].replace(/<[^>]+>/g,'').trim());\nreturn [{ json: { heading_1: matches[0] || 'Main topic', heading_2: matches[1] || 'Technical details' } }];"
+      }
+    },
+    {
+      "id": "gemini-image-1",
+      "name": "Gemini - Image 1",
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        3560,
+        30
+      ],
+      "parameters": {
+        "modelId": "models/gemini-2.5-flash-image-preview",
+        "messages": {
+          "values": [
+            {
+              "content": "=Generate a clean editorial image for: {{ $json.heading_1 }}. Return image as base64 only."
+            }
+          ]
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "id": "gemini-image-2",
+      "name": "Gemini - Image 2",
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        3560,
+        240
+      ],
+      "parameters": {
+        "modelId": "models/gemini-2.5-flash-image-preview",
+        "messages": {
+          "values": [
+            {
+              "content": "=Generate a clean editorial image for: {{ $json.heading_2 }}. Return image as base64 only."
+            }
+          ]
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "id": "upload-image-1",
+      "name": "Upload Image 1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        3780,
+        30
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://www.hursit.me/api/upload",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpBearerAuth",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "file",
+              "parameterType": "formBinaryData",
+              "inputDataFieldName": "image_1"
+            }
+          ]
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "id": "upload-image-2",
+      "name": "Upload Image 2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        3780,
+        240
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://www.hursit.me/api/upload",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpBearerAuth",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "file",
+              "parameterType": "formBinaryData",
+              "inputDataFieldName": "image_2"
+            }
+          ]
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "id": "inject-inline-images",
+      "name": "Inject Inline Images",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4000,
+        140
+      ],
+      "parameters": {
+        "jsCode": "const contentEn = $node['Gemini - Writer'].json.content.parts[0].text;\nconst contentTr = $node['Gemini - Translator'].json.content.parts[0].text;\nconst image1 = $node['Upload Image 1'].json.url || '';\nconst image2 = $node['Upload Image 2'].json.url || '';\nconst img1 = image1 ? `<p><img src=\"${image1}\" alt=\"generated image\" loading=\"lazy\"></p>` : '';\nconst img2 = image2 ? `<p><img src=\"${image2}\" alt=\"generated image\" loading=\"lazy\"></p>` : '';\nconst withFirst = contentEn.replace(/(<h2[^>]*>.*?<\\/h2>)/i, `$1${img1}`);\nconst withSecond = withFirst.replace(/(<h2[^>]*>.*?<\\/h2>)([\\s\\S]*?<h2[^>]*>.*?<\\/h2>)/i, `$1$2${img2}`);\nconst withFirstTr = contentTr.replace(/(<h2[^>]*>.*?<\\/h2>)/i, `$1${img1}`);\nconst withSecondTr = withFirstTr.replace(/(<h2[^>]*>.*?<\\/h2>)([\\s\\S]*?<h2[^>]*>.*?<\\/h2>)/i, `$1$2${img2}`);\nreturn [{ json: { content_en: withSecond, content_tr: withSecondTr, thumbnail: image1 } }];"
+      }
+    },
+    {
+      "id": "prepare-post-payload",
+      "name": "Prepare Post Payload",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [
+        4220,
+        140
+      ],
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "title_en",
+              "value": "={{ $node['Gemini - Writer'].json.content.parts[0].text.split('\\n').find(l => l.trim().startsWith('<h2>'))?.replace(/<[^>]+>/g,'') || 'Untitled' }}"
+            },
+            {
+              "name": "title_tr",
+              "value": "={{ $node['Gemini - Translator'].json.content.parts[0].text.split('\\n').find(l => l.trim().startsWith('<h2>'))?.replace(/<[^>]+>/g,'') || 'Basliksiz' }}"
+            },
+            {
+              "name": "content_en",
+              "value": "={{ $node['Inject Inline Images'].json.content_en }}"
+            },
+            {
+              "name": "content_tr",
+              "value": "={{ $node['Inject Inline Images'].json.content_tr }}"
+            },
+            {
+              "name": "thumbnail",
+              "value": "={{ $node['Inject Inline Images'].json.thumbnail }}"
+            },
+            {
+              "name": "source_url",
+              "value": "={{ $node['Parse Selector JSON'].json.source_link }}"
+            },
+            {
+              "name": "primary_category_slug",
+              "value": "={{ $node['Validate Category JSON'].json.primary_category_slug }}"
+            }
+          ],
+          "json": [
+            {
+              "name": "secondary_tag_slugs",
+              "value": "={{ $node['Validate Category JSON'].json.secondary_tag_slugs }}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "create-post-automated",
+      "name": "Create Post (Automated API)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        4460,
+        140
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://www.hursit.me/api/posts/automated",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpBearerAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {\n  \"title_en\": $json.title_en,\n  \"title_tr\": $json.title_tr,\n  \"short_description_en\": $json.content_en.replace(/<[^>]+>/g, '').substring(0,160),\n  \"short_description_tr\": $json.content_tr.replace(/<[^>]+>/g, '').substring(0,160),\n  \"content_en\": $json.content_en,\n  \"content_tr\": $json.content_tr,\n  \"status\": \"published\",\n  \"thumbnail\": $json.thumbnail,\n  \"source_url\": $json.source_url,\n  \"primary_category_slug\": $json.primary_category_slug,\n  \"secondary_tag_slugs\": $json.secondary_tag_slugs\n} }}"
+      }
+    },
+    {
+      "id": "telegram-success",
+      "name": "Telegram Success",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        4680,
+        140
+      ],
+      "parameters": {
+        "chatId": "5679822050",
+        "text": "=✅ Weekly automated post published: {{ $json.link }}"
+      }
+    }
+  ],
+  "connections": {
+    "Cron Weekly": {
+      "main": [
+        [
+          {
+            "node": "RSS Links",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Links": {
+      "main": [
+        [
+          {
+            "node": "RSS to JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS to JSON": {
+      "main": [
+        [
+          {
+            "node": "Merge RSS Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge RSS Data": {
+      "main": [
+        [
+          {
+            "node": "Gemini - Selector",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini - Selector": {
+      "main": [
+        [
+          {
+            "node": "Parse Selector JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Selector JSON": {
+      "main": [
+        [
+          {
+            "node": "Get Dedupe Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Dedupe Context": {
+      "main": [
+        [
+          {
+            "node": "Gemini - Duplicate Judge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini - Duplicate Judge": {
+      "main": [
+        [
+          {
+            "node": "Parse Duplicate JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Duplicate JSON": {
+      "main": [
+        [
+          {
+            "node": "IF Duplicate >= 0.78",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Duplicate >= 0.78": {
+      "main": [
+        [
+          {
+            "node": "Telegram Duplicate Skip",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Taxonomy",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Taxonomy": {
+      "main": [
+        [
+          {
+            "node": "Gemini - Category Selector",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini - Category Selector": {
+      "main": [
+        [
+          {
+            "node": "Validate Category JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Category JSON": {
+      "main": [
+        [
+          {
+            "node": "Gemini - Writer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini - Writer": {
+      "main": [
+        [
+          {
+            "node": "Gemini - Translator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini - Translator": {
+      "main": [
+        [
+          {
+            "node": "Extract First 2 Headings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract First 2 Headings": {
+      "main": [
+        [
+          {
+            "node": "Gemini - Image 1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Gemini - Image 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini - Image 1": {
+      "main": [
+        [
+          {
+            "node": "Upload Image 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini - Image 2": {
+      "main": [
+        [
+          {
+            "node": "Upload Image 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload Image 1": {
+      "main": [
+        [
+          {
+            "node": "Inject Inline Images",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload Image 2": {
+      "main": [
+        [
+          {
+            "node": "Inject Inline Images",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Inject Inline Images": {
+      "main": [
+        [
+          {
+            "node": "Prepare Post Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Post Payload": {
+      "main": [
+        [
+          {
+            "node": "Create Post (Automated API)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Post (Automated API)": {
+      "main": [
+        [
+          {
+            "node": "Telegram Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
