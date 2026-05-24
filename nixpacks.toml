@@ -1,0 +1,8 @@
+# Dokploy/Nixpacks runtime override.
+# Prepends `php artisan migrate --force` to the Nixpacks PHP provider's
+# default start command (php-fpm + nginx via prestart.mjs).
+# The original CMD (discovered via /proc/1/cmdline inspection on a
+# Nixpacks-built container) is preserved verbatim below.
+
+[start]
+cmd = "php artisan migrate --force && node /assets/scripts/prestart.mjs /assets/nginx.template.conf /nginx.conf && (php-fpm -y /assets/php-fpm.conf & nginx -c /nginx.conf)"
