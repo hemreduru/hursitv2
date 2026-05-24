@@ -151,7 +151,6 @@
         }
     </style>
     <script>
-        // Match site preference: dark by default, light only if explicitly chosen.
         try {
             if (localStorage.theme === 'light') document.documentElement.classList.remove('dark');
         } catch (e) {}
@@ -166,10 +165,10 @@
                     <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
                 </svg>
             </div>
-            <h1>Kısa süreliğine bakımdayız</h1>
+            <h1>Site üzerinde kısa bir çalışma yapıyorum</h1>
             <p class="lead">
-                Site şu an güncelleniyor. Birkaç dakika içinde her şey eskisinden daha iyi olacak.
-                Bu süre zarfında uğradığınız için teşekkürler — birazdan görüşmek üzere.
+                Şu anda küçük bir güncelleme yapıyorum, birkaç dakika içinde her şeyi hazır edeceğim.
+                Uğradığın için teşekkür ederim — birazdan görüşmek üzere.
             </p>
             @isset($exception)
                 @if($exception->getMessage())
@@ -179,7 +178,7 @@
         </div>
         <div class="footer">
             &copy; {{ date('Y') }} Hurşit Emre Duru &middot;
-            <a href="mailto:hello@hursit.me">hello@hursit.me</a>
+            <a href="mailto:hemreduru@gmail.com">hemreduru@gmail.com</a>
         </div>
     </div>
 </body>
