@@ -1,0 +1,14 @@
+# Dokploy/Nixpacks runtime override.
+# Goal: run `php artisan migrate --force` (and ensure storage symlink)
+# before the Nixpacks-generated Laravel runtime starts on every deploy.
+#
+# Implementation: we shell-out to `bash /assets/start.sh`, which is the
+# wrapper script the Nixpacks PHP provider drops into the image. If
+# that path changes in a future Nixpacks version this `[start.cmd]`
+# will fail visibly and the previous container keeps serving traffic
+# (Swarm only swaps containers after the new task is healthy).
+#
+# To roll back: delete this file or use Dokploy → Deployments → Rollback.
+
+[start]
+cmd = "php artisan migrate --force && (php artisan storage:link 2>/dev/null || true) && bash /assets/start.sh"
